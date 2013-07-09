@@ -1,0 +1,832 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package projectschedulingproblem;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+
+/**
+ *
+ * @author saeed
+ */
+public class Chromosome {
+
+    private ArrayList<GeneticOPA> Elements;
+    private Double Duration = 0.0;
+    private Double Fitness;// 1/Duration
+    private Generation GenParent;
+    private GeneticPool GP;
+    private GeneticsVariablesCapsule GVC;
+    DecimalFormat DFormat = new DecimalFormat(MainForm.PrecFormat);
+    private boolean withgrouping;
+    private Double GenProbability;// this is the probability chosen by the generation 
+    //Collections.shuffle(arrayList);
+
+    public Chromosome(Generation Gen, boolean withgrouping) {
+
+        this.GenParent = Gen;
+        this.GP = GenParent.getGP();
+        this.GVC = GenParent.getGVC();
+        this.Elements = new ArrayList<GeneticOPA>();
+        this.withgrouping = withgrouping;
+
+
+    }
+
+    public Chromosome(Generation Gen, Chromosome Chr) {
+
+        this.GenParent = Gen;
+        this.GP = GenParent.getGP();
+        this.GVC = GenParent.getGVC();
+        this.Elements = Chr.getElements();
+        this.setDuration();
+    }
+
+    public void CreateFirstGenerationGeneticOPAs(int MethodMode) {
+
+        int RandomorNot = GVC.getFirstGenChoosingMode();
+        if (MethodMode == GeneticsMain.LMMETHODMODE) {
+            if (RandomorNot == GeneticsMain.RANDOMFIRSTGEN) {
+                if (withgrouping) {
+                    for (OperationProjectActivity OPa : GP.getGPool()) {
+
+                        Double Prob = OPa.getProbability();
+                        boolean choosme = GeneticsMain.GeneticsFlipaCoin(Prob);
+                        if (choosme) {
+                            this.Elements.add(new GeneticOPA(OPa));
+                        }
+                    }
+                    Collections.shuffle(Elements);
+
+                } else {
+                    for (OperationProjectActivity OPa : GP.getGPool()) {
+
+                        this.Elements.add(new GeneticOPA(OPa));
+                    }
+
+                    Collections.shuffle(Elements);
+                }
+
+            } else {
+                // here LMMETHODMODE and NOTRANDOMFIRSTGEN
+                for (OperationProjectActivity OPa : GP.getGPool()) {
+
+                    this.Elements.add(new GeneticOPA(OPa));
+                }
+
+                RunLMandNotRandom();
+            }
+        } else if (MethodMode == GeneticsMain.EMMETHODMODE) {
+            if (RandomorNot == GeneticsMain.RANDOMFIRSTGEN) {
+                for (OperationProjectActivity OPa : GP.getGPool()) {
+
+                    Double Prob = OPa.getProbability();
+                    boolean choosme = GeneticsMain.GeneticsFlipaCoin(Prob);
+                    if (choosme) {
+                        this.Elements.add(new GeneticOPA(OPa));
+                    }
+                }
+                Collections.shuffle(Elements);
+            } else {
+                // here is EM and NotRandom 
+            }
+        }
+        this.setDuration();
+    }
+
+    public Double RunforDuration() {
+
+         OperationResources OPR = new OperationResources(this.GenParent.getGMParent().getPfolio().getGlobalResources(), this.GenParent.getLog());
+        OPR.createOperationReses();
+        Double StepDur = 0.0;
+        ArrayList<GeneticOPA> ExcutionPool = Elements;
+        for (GeneticOPA GOPA : ExcutionPool) {
+            GOPA.ResetGOPA();
+        }
+        ArrayList<GeneticOPA> WorkingPool = new ArrayList<GeneticOPA>();
+        ArrayList<GeneticOPA> FinishedPool = new ArrayList<GeneticOPA>();
+        // will set all the activities that can start to start the project
+        for (GeneticOPA GOPA : ExcutionPool) {
+            if (GOPA.IscanStart()) {
+                GOPA.setStatus(GeneticOPA.CANSTART);
+            }
+
+        }
+        boolean AllhaveFinished = false;
+        Double TimeConsumed = 0.0;
+        int Ubnormal=0;
+        
+         this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: HASSSSS STARTED");
+        while (!AllhaveFinished ) {
+            if(Ubnormal==1000){
+                AllhaveFinished=true;
+               this.GenParent.getLog(). appendToLog(Logger.INFORMATION, "Chromosome:RunforDuration:Ubnormal");
+                continue;
+            }
+     
+            
+            
+            ArrayList<String> ProblemResources = new ArrayList<String>();
+            for (GeneticOPA GOPA : ExcutionPool) {
+                // check for resource availability
+
+                if (GOPA.getStatus() == GeneticOPA.HASSTARTED) {// has started doesnt fight for resources
+                    //continue;
+                } else if(GOPA.getStatus() == GeneticOPA.CANSTART) {
+
+                    String Res = GOPA.getOriginalOPA().getOriginalPA().getResNames();
+                    String[] Resnames = Res.split(",");
+
+                    for (int i = 0; i < Resnames.length; i++) {
+                        String trimmedResName = Resnames[i].trim();
+                        OperationRes OR = OPR.getOperationResourcebyName(trimmedResName);
+
+                        Double QtyAvailable = OR.getAvailableQuantity();
+                        if (QtyAvailable != 0.0) {
+                            //Log.appendToLog(Logger.INFORMATION, "TimeStepper:Start: QTY Available for resources " + trimmedResName + " is " + QtyAvailable);
+                            Double QtyNeeded = 0.0;
+                            String OPAsFighting = "";
+                            for (GeneticOPA OPA2 : ExcutionPool) {
+                                if (OPA2.isthisresourceneeded(trimmedResName) && OPA2.getStatus()==GeneticOPA.CANSTART) {
+
+                                    OPAsFighting += OPA2.getOPAIdentifier(false) + ",";
+                                    Double QtyN = OPA2.getResourceNeededQtybyName(trimmedResName);
+                                    QtyNeeded += QtyN;
+                                    //Log.appendToLog(Logger.INFORMATION,"TimeStepper:Start: the resource  "+trimmedResName+" is needed by "+OPA2.getOPAIdentifier(false));  
+                                }
+
+                                //need to check if this resource is needed by multiple OPAs and their sum is higher than the availabel quantity
+                            }
+                            if (QtyNeeded > QtyAvailable) {
+                                String OPAFight = trimmedResName + "," + QtyNeeded + "," + QtyAvailable + "," + OPAsFighting;
+
+                                // this line is very important since it will check if there are in the fight any already waiting or has started OPAs , since it is useless to fight them 
+                                if (!ProblemResources.contains(OPAFight) && !DoesStringhasStartedOPA(OPAFight, ExcutionPool) && !isanyOPAwaitingforResource(OPAFight, ExcutionPool)) {
+                                    ProblemResources.add(OPAFight);
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            for (String RName : ProblemResources) {
+                
+                solveFight(RName, ExcutionPool); // this should set the OPAs that are waiting   
+            }
+
+            for (GeneticOPA GOPA : ExcutionPool) {
+
+                if (GOPA.getStatus() == GeneticOPA.CANSTART  ) {
+                    // the Below Linr is very important since it will check if the OPA that havent has a fight, if it can researve all the resources needed.
+                    //if (OPR.canOPALockAllItsResources(GOPA)) {
+                        GOPA.setStatus(GeneticOPA.HASSTARTED);
+                       //lock resources
+                    //    OPR.LockResourceOPA(GOPA);
+                  //  } else {
+                        //GOPA.setStatus(GeneticOPA.ISWAITINGFORRESOURCES);
+                 //   }
+
+                }
+            }
+            StepDur = calculateDurationofstep(ExcutionPool);
+            TimeConsumed += StepDur;
+            TimeConsumed = Double.valueOf(DFormat.format(TimeConsumed));
+            // Milestone End of check for resource availability
+
+            for (GeneticOPA GOPA : ExcutionPool) {
+                if (GOPA.getStatus() == GeneticOPA.HASSTARTED) {
+
+                    //Log.appendToLog(Logger.IMPORTANT, "TimeStepper:Start: OPA Before Statuses " + GOPA.getOPAIdentifier(false) + " Status " + OPA.getStatus());
+                    if (GOPA.getCurrentDuration() <= StepDur) {
+                        GOPA.setStatus(GeneticOPA.HASFINISHED);
+
+                        //release resources
+                        //OPR.ReleaseResourceOPA(GOPA);
+                        if (!FinishedPool.contains(GOPA)) {
+                             this.GenParent.getLog(). appendToLog(Logger.INFORMATION, "Chromosome:RunforDuration:Adding  Gopa to finished pool "+GOPA.getOPAIdentifier(false));
+                            FinishedPool.add(GOPA);
+                        }
+                        //finish the OPA
+                        // add to Step Log
+
+                    } else {
+                        if (StepDur > GOPA.getCurrentDuration()) {
+                            GOPA.setCurrentDuration(StepDur - GOPA.getCurrentDuration());
+                        } else {
+                            //  Log.appendToLog(Logger.IMPORTANT, "TimeStepper:Start: the stepDUR<Current for  OPA" + OPA.getOPAIdentifier(false) + "  Dur " + OPA.getCurrentDuration());
+                        }
+                    }
+
+                    //  Log.appendToLog(Logger.IMPORTANT, "TimeStepper:Start: OPA AFTER Statuses " + OPA.getOPAIdentifier(false) + " Status " + OPA.getStatus());
+                }
+            }
+            for (GeneticOPA GOPA : ExcutionPool) {
+                if (GOPA.getStatus() != GeneticOPA.HASSTARTED && GOPA.getStatus() != GeneticOPA.HASFINISHED ) {
+   
+                    if (arePredecessorsFinished(GOPA, ExcutionPool)) {
+                 this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: GOPA : ExcutionPool can start =" + GOPA.getOPAIdentifier(false));
+
+                        GOPA.setStatus(GeneticOPA.CANSTART);
+                    }else{
+                        GOPA.setStatus(GeneticOPA.UNSTARTED);
+                    }
+
+                }
+            }
+
+            // Milestone check if all Tasks are FinishedPool
+            boolean AllhaveFinishedtemp = true;
+            for (GeneticOPA Gopa : ExcutionPool) {
+                if (Gopa.getStatus() != GeneticOPA.HASFINISHED) {
+                    AllhaveFinishedtemp = false;
+                    break;
+                }
+            }
+            AllhaveFinished = AllhaveFinishedtemp;
+            
+            
+            Ubnormal++;
+        }
+
+        //Elements = FinishedPool;
+        String s = "FinishedPool Elements are ";
+        for (GeneticOPA Gopa : Elements) {
+            s += Gopa.getOPAIdentifier(false);
+
+        }
+        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:GetDuration: FinishedPool Elements are =" + s);
+
+
+
+        return TimeConsumed;
+    }
+
+    public Double calculateDurationofstep(ArrayList<GeneticOPA> ExcutionPool) {
+        Double MinDuration = Double.MAX_VALUE;
+        for (GeneticOPA Gopa : ExcutionPool) {
+            if (Gopa.getStatus() == GeneticOPA.HASSTARTED) {
+                Double Dur = Gopa.getCurrentDuration();
+                //Log.appendToLog(Logger.INFORMATION, "TimeStepper:solveFight: calculateDurationofstep OPA " + OPA.getOPAIdentifier(false) + " DUr " + Dur + " MD  " + MinDuration);
+                if (Dur <= MinDuration) {
+                    MinDuration = Dur;
+                }
+
+            }
+        }
+        if (MinDuration == Double.MAX_VALUE) {
+            return 0.0;
+        }
+        return MinDuration;
+    }
+
+    public void solveFight(String ResFight, ArrayList<GeneticOPA> AL) {
+        String SplitString[] = ResFight.split(",");
+        String ResName = SplitString[0];
+        Double QuantityNeeded = Double.parseDouble(SplitString[1]);
+        Double QuantityAvailable = Double.parseDouble(SplitString[2]);
+        ArrayList<GeneticOPA> Fighters = new ArrayList<GeneticOPA>();
+
+        GeneticOPA MinPA = null;
+
+        for (int i = 3; i < SplitString.length; i++) {
+            for (GeneticOPA Opa : AL) {
+                if (Opa.getStatus() == GeneticOPA.CANSTART) {
+                    if (Opa.getOPAIdentifier(false).equalsIgnoreCase(SplitString[i])) {
+                        Fighters.add(Opa);
+                        //   Log.appendToLog(Logger.INFORMATION, "TimeStepper:solveFight: add OPA " + SplitString[i] + " to Fighters");
+                        break;
+                    }
+                }
+            }
+        }
+        Double Min = 99999.0;
+        boolean allEqual = true;
+        Double val = 0.0;
+        int x = 0;
+        while (x != -1) {
+            for (GeneticOPA OPa : Fighters) {
+
+                Double current = OPa.getResourceNeededQtybyName(ResName);
+                if (val == 0.0) {
+                    val = current;
+                }
+                if (!val.equals(current)) {
+                    allEqual = false;
+                    //  Log.appendToLog(Logger.INFORMATION, "TimeStepper:solveFight: they are not equal " + val + "Cuurent " + current);
+                }
+                if (current <= Min) {
+                    Min = current;
+                    MinPA = OPa;
+                }
+            }
+
+            if (Min <= QuantityAvailable) {
+                if (allEqual) {
+                    Random generator = new Random();
+                    int randomIndex = generator.nextInt(Fighters.size());
+                    GeneticOPA opa = Fighters.get(randomIndex);
+                    opa.setStatus(OperationProjectActivity.CANSTART);
+                    QuantityAvailable -= Min;
+                    Fighters.remove(opa);
+                    //   Log.appendToLog(Logger.INFORMATION, "TimeStepper:solveFight: all equal and randomizing " + opa.getOPAIdentifier(false) + " can start and use  " + ResName);
+                } else {
+                    //   Log.appendToLog(Logger.INFORMATION, "TimeStepper:solveFight: Opa " + MinPA.getOPAIdentifier(false) + " can start and use  " + ResName);
+                    MinPA.setStatus(OperationProjectActivity.CANSTART);
+                    QuantityAvailable -= Min;
+                    Fighters.remove(MinPA);
+                }
+            } else if (Min > QuantityAvailable) {
+                x = -1;
+                for (GeneticOPA OPa : Fighters) {
+                    OPa.setStatus(OperationProjectActivity.ISWAITINGFORRESOURCES);
+                    //   Log.appendToLog(Logger.INFORMATION, "TimeStepper:solveFight: Opa " + OPa.getOPAIdentifier(false) + " is waiting for  " + ResName);
+                }
+            }
+        }
+    }
+
+    public boolean isanyOPAwaitingforResource(String str, ArrayList<GeneticOPA> ExcutionPool) {
+        String SplitString[] = str.split(",");
+        for (int i = 3; i < SplitString.length; i++) {
+            for (GeneticOPA Opa : ExcutionPool) {
+                if (Opa.getOPAIdentifier(false).equalsIgnoreCase(SplitString[i]) && Opa.getStatus() == GeneticOPA.ISWAITINGFORRESOURCES) {
+                    return false;
+
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean DoesStringhasStartedOPA(String str, ArrayList<GeneticOPA> ExcutionPool) {
+        String SplitString[] = str.split(",");
+        for (int i = 3; i < SplitString.length; i++) {
+            for (GeneticOPA Opa : ExcutionPool) {
+                if (Opa.getOPAIdentifier(false).equalsIgnoreCase(SplitString[i]) && Opa.getStatus() == GeneticOPA.HASSTARTED) {
+                    return false;
+
+                }
+            }
+        }
+        return true;
+    }
+
+    public void RunLMandNotRandom() {
+
+        ArrayList<GeneticOPA> ExcutionPool = Elements;
+        for (GeneticOPA GOPA : ExcutionPool) {
+            GOPA.ResetGOPA();
+        }
+
+        ArrayList<GeneticOPA> WorkingPool = new ArrayList<GeneticOPA>();
+        ArrayList<GeneticOPA> FinishedPool = new ArrayList<GeneticOPA>();
+        // will set all the activities that can start to start the project
+        for (GeneticOPA GOPA : ExcutionPool) {
+            if (GOPA.IscanStart()) {
+                GOPA.setStatus(GeneticOPA.CANSTART);
+            }
+
+        }
+        boolean AllhaveFinished = false;
+       int  Ubnormal=0;
+        while (!AllhaveFinished) {
+            if(Ubnormal==1000){
+                AllhaveFinished=true;
+               this.GenParent.getLog(). appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom:Ubnormal");
+                continue;
+            }
+            
+            for (GeneticOPA GOPA : ExcutionPool) {
+                if (GOPA.getStatus() == GeneticOPA.CANSTART) {
+                    GOPA.setStatus(GeneticOPA.HASSTARTED);
+                }
+            }
+            ArrayList<GeneticOPA> TempPool = new ArrayList<GeneticOPA>();
+            for (GeneticOPA GOPA : ExcutionPool) {
+                if (GOPA.getStatus() == GeneticOPA.HASSTARTED) {
+                    if (!FinishedPool.contains(GOPA)) {
+                     
+                            TempPool.add(GOPA);
+ 
+                    }
+
+                    GOPA.setStatus(GeneticOPA.HASFINISHED);
+                }
+            }
+            if(TempPool.size()>=1){
+                   ArrangePool(TempPool);
+            }
+            FinishedPool.addAll(TempPool);
+             //FinishedPool.add(GOPA);
+            for (GeneticOPA GOPA : ExcutionPool) {
+                if (GOPA.getStatus() != GeneticOPA.HASSTARTED && GOPA.getStatus() != GeneticOPA.HASFINISHED) {
+                    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom: GOPA : ExcutionPool =" + GOPA.getOPAIdentifier(false));
+
+                    if (arePredecessorsFinished(GOPA, ExcutionPool)) {
+
+                        GOPA.setStatus(GeneticOPA.CANSTART);
+                    }
+
+                }
+            }
+
+            // Milestone check if all Tasks are FinishedPool
+            boolean AllhaveFinishedtemp = true;
+            for (GeneticOPA Gopa : ExcutionPool) {
+                if (Gopa.getStatus() != GeneticOPA.HASFINISHED) {
+                    AllhaveFinishedtemp = false;
+                    break;
+                }
+            }
+            AllhaveFinished = AllhaveFinishedtemp;
+            Ubnormal++;
+        }
+
+        Elements = FinishedPool;
+        String s = "FinishedPool Elements are ";
+        for (GeneticOPA Gopa : Elements) {
+            s += Gopa.getOPAIdentifier(false);
+
+        }
+        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom: FinishedPool Elements are =" + s);
+
+    }
+public ArrayList<GeneticOPA> ArrangePool(ArrayList<GeneticOPA> TempPool){
+    for (GeneticOPA Gopa : TempPool) {
+        int Index =TempPool.indexOf(Gopa);
+        int newIndex =0;//ArePredsBeforeGopa(Gopa,TempPool);
+        if(newIndex==0){
+            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ArrangePool: the Gopa " + Gopa.getOPAIdentifier(false) + "is in place");
+        }else{
+            //TempPool.set(Index, Gopa)
+            Collections.swap(TempPool, Index, Index+newIndex);
+         this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ArrangePool: the Gopa " + Gopa.getOPAIdentifier(false) + " needs to move "+Index);  
+        }
+        
+    }
+    
+    
+    return TempPool;
+}
+//public int ArePredsBeforeGopa(GeneticOPA MainGOpa,ArrayList<GeneticOPA> TempPool){
+//    // return 0 if the preds are... 
+//    // return number for the last predecessor place
+//// changed in 6/5/2013 
+//    
+//        ArrayList<String> ElementNames = new ArrayList<String>();
+//        ArrayList<GeneticOPA> FeedbackElements = getFeedbacksinChromosome();
+//        int CurrentIndex=TempPool.indexOf(MainGOpa);
+//        int HighestIndex=CurrentIndex;
+//        for (GeneticOPA Gopa : TempPool) {
+//            ElementNames.add(Gopa.getOPAIdentifier(false));
+//        }
+//        for (GeneticOPA Gopa : TempPool) {
+//            // check if all the predecessors are behind it 
+//            if (Gopa.isStartsafterfeedbackCycle()) {
+//                 
+//           ArrayList<GeneticOPA> neededFeedbackElements = new ArrayList<GeneticOPA>();
+//           ArrayList<String> FCids=MainGOpa.getGeneticFCIDs();
+//                ArrayList<String> GFP = Gopa.getGeneticsFeedbackPredecessors();
+//                 for(GeneticOPA Fgopa:FeedbackElements){
+//             String  Fgopaname=Fgopa.getOPAIdentifier(true);
+//               String GFCID=Fgopa.getFCID();
+//               if(GFP.contains(Fgopaname)&&FCids.contains(GFCID)){
+//                    neededFeedbackElements.add(Fgopa);
+//               }
+//           }
+//                // looop all feebacks that are included in the Chromosome
+//                for (GeneticOPA FGopa : neededFeedbackElements) {
+//                    if (GFP.contains(FGopa.getOPAIdentifier(true))) {
+//                        int Index = ElementNames.indexOf(FGopa.getOPAIdentifier(false));
+//                        if(Index>HighestIndex){
+//                              HighestIndex = Index;
+//                        }
+//                      
+//                    }
+//                }
+//                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ArePredsBeforeGopa: the Gopa " + Gopa.getOPAIdentifier(false) + " needs to wait for an FC cycle " + GFP.get(0));
+//            }
+//
+//            ArrayList<String> Preds = MainGOpa.getPredOPAIDs();
+//             this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ArePredsBeforeGopa: the Gopa ");
+//            for (String Pred : Preds) {
+//                int PredIndex = ElementNames.indexOf(Pred);
+//                if(PredIndex>HighestIndex){
+//                      HighestIndex = PredIndex;
+//                }
+//            }
+//
+//        }
+//    return HighestIndex-CurrentIndex;
+//    
+//}
+
+    public boolean arePredecessorsFinished(GeneticOPA Gopa, ArrayList<GeneticOPA> ExcutionPool) {
+
+        boolean GopasHasFinished = true;
+       if (Gopa.isStartsafterfeedbackCycle()) {
+           ArrayList<GeneticOPA> FeedbackElements = getFeedbacksinChromosome();
+           ArrayList<GeneticOPA> neededFeedbackElements = new ArrayList<GeneticOPA>();
+           ArrayList<String> Fpreds=Gopa.getGeneticsFeedbackPredecessors();
+           ArrayList<String> FCids=Gopa.getGeneticFCIDs();
+            
+           for(GeneticOPA Fgopa:FeedbackElements){
+             String  Fgopaname=Fgopa.getOPAIdentifier(true);
+               String GFCID=Fgopa.getFCID();
+               if(Fpreds.contains(Fgopaname)&&FCids.contains(GFCID)){
+                    neededFeedbackElements.add(Fgopa);
+               }
+           }
+            for (GeneticOPA Pred : neededFeedbackElements) {
+                if (Pred.getStatus() != GeneticOPA.HASFINISHED) {
+                    GopasHasFinished = false;
+                    break;
+                }
+
+            }
+        }
+
+        if (!GopasHasFinished) {
+            return GopasHasFinished;
+        }
+        
+        
+        
+        GopasHasFinished = true;
+        ArrayList<String> Preds = Gopa.getPredOPAIDs();
+        if(Preds.isEmpty()){
+            return true;
+        }
+        if(Gopa.isfeedback()&& !Gopa.isFeddbackStarterOPA()){
+           ArrayList<GeneticOPA> FeedbackElements = getFeedbacksinChromosome();
+           ArrayList<GeneticOPA> neededFeedbackElements = new ArrayList<GeneticOPA>();
+           ArrayList<String> Fpreds=Gopa.getGeneticsFeedbackPredecessors();
+           ArrayList<String> FCids=Gopa.getGeneticFCIDs();
+            
+           for(GeneticOPA Fgopa:FeedbackElements){
+             String  Fgopaname=Fgopa.getOPAIdentifier(true);
+               String GFCID=Fgopa.getFCID();
+               if(Fpreds.contains(Fgopaname)&&FCids.contains(GFCID)){
+                    neededFeedbackElements.add(Fgopa);
+               }
+           }
+            for (GeneticOPA Pred : neededFeedbackElements) {
+                if (Pred.getStatus() != GeneticOPA.HASFINISHED) {
+                    GopasHasFinished = false;
+                    break;
+                }
+
+            }
+            
+        }else{
+            
+             ArrayList<String> Preds1 = Gopa.getPredOPAIDs();
+            for (GeneticOPA Gopas : ExcutionPool) {
+            
+            if (Preds1.contains(Gopas.getOPAIdentifier(false))) {
+                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:arePredecessorsFinished: Checking for Gopa " + Gopa.getOPAIdentifier(false) +" Status "+Gopa.getStatus()+ "Pred" + Gopas.getOPAIdentifier(false) + "Status "+Gopas.getStatus());
+                if (Gopas.getStatus() != GeneticOPA.HASFINISHED) {
+
+                    GopasHasFinished = false;
+                   break;
+                }
+            }
+        }
+            
+        }
+
+        return GopasHasFinished;
+    }
+
+    public void RunEMandNotRandom() {
+
+        ArrayList<GeneticOPA> ExcutionPool = Elements;
+        ArrayList<GeneticOPA> WorkingPool = new ArrayList<GeneticOPA>();
+        ArrayList<GeneticOPA> Finished = new ArrayList<GeneticOPA>();
+
+
+
+
+    }
+
+    public ArrayList<Double> getGopaProbsforcrossover() {
+        ArrayList<Double> Aldoubles = new ArrayList<Double>();
+        for (int i = 0; i <= Elements.size(); i++) {
+
+            Aldoubles.add(i, GeneticsMain.GeneticsGenerateNumberPercentage());
+
+        }
+        return Aldoubles;
+    }
+
+    @Override
+    public String toString() {
+        String s = "";//" the Chromosome has the following Elements";
+        for (GeneticOPA Gopa : Elements) {
+
+            s += Gopa.toString(true) + ";";
+
+        }
+        return s;
+
+    }
+
+    /**
+     * @return the Elements
+     */
+    public ArrayList<GeneticOPA> getElements() {
+        return Elements;
+    }
+
+    /**
+     * @param Elements the Elements to set
+     */
+    public void setElements(ArrayList<GeneticOPA> Elements) {
+        this.setElements(Elements);
+    }
+
+    public void setDuration() {
+
+        if (!checkFeasibility()) {
+            this.Duration = Double.POSITIVE_INFINITY;
+            this.Fitness = Double.valueOf(DFormat.format(1 / Duration));
+            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: the Gopa returning Positive Infinity  " + getFitness());
+            return;
+        }
+//        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: they are feasable  ");
+//        // todo insert the running for the project with Resources
+        this.Duration = RunforDuration();
+        this.Fitness = Double.valueOf(DFormat.format(1 / Duration));
+        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: the Gopa returning Duration of  " + Duration);
+
+    }
+
+    /**
+     * @return the Duration
+     */
+    public Double getDuration() {
+        // check for feasibiliy 
+
+        return Duration;
+    }
+
+    public int gettheHighestFeedbackLevel() {
+        int HighestfeedbackValue = 0;
+        for (GeneticOPA Gopa : Elements) {
+
+            if (Gopa.isfeedback()) {
+
+                Double HighestfeedbackDouble = Double.parseDouble(Gopa.getOriginalOPA().getFeedbackDepth());
+                HighestfeedbackValue = HighestfeedbackDouble.intValue();
+            }
+        }
+        return HighestfeedbackValue;
+
+    }
+
+    public boolean checkFeasibility() {
+   // ArrayList<GeneticOPA> FeedbackElements = getFeedbacksinChromosome();
+//           ArrayList<GeneticOPA> neededFeedbackElements = new ArrayList<GeneticOPA>();
+//           ArrayList<String> Fpreds=Gopa.getGeneticsFeedbackPredecessors();
+//           ArrayList<String> FCids=Gopa.getGeneticFCIDs();
+//            
+//           for(GeneticOPA Fgopa:FeedbackElements){
+//             String  Fgopaname=Fgopa.getOPAIdentifier(true);
+//               String GFCID=Fgopa.getFCID();
+//               if(Fpreds.contains(Fgopaname)&&FCids.contains(GFCID)){
+//                    neededFeedbackElements.add(Fgopa);
+//               }
+//           }
+//            for(GeneticOPA Pred : neededFeedbackElements){
+//                if(Pred.getStatus()!=GeneticOPA.HASFINISHED){
+//                       GopasHasFinished=false;
+//        
+        
+        
+        
+        
+        
+        boolean IsFeasable = true;
+       
+        ArrayList<GeneticOPA> FeedbackElements = getFeedbacksinChromosome();
+        ArrayList<String> ElementNames = new ArrayList<String>();
+
+        for (GeneticOPA Gopa : Elements) {
+            ElementNames.add(Gopa.getOPAIdentifier(false));
+        }
+        for (GeneticOPA Gopa : Elements) {
+            // check if all the predecessors are behind it 
+            if (Gopa.isStartsafterfeedbackCycle()) {
+                ArrayList<String> GFP = Gopa.getGeneticsFeedbackPredecessors();
+          // modified 5/6/2013
+                ArrayList<GeneticOPA> neededFeedbackElements = new ArrayList<GeneticOPA>();
+                ArrayList<String> Fpreds = Gopa.getGeneticsFeedbackPredecessors();
+                ArrayList<String> FCids = Gopa.getGeneticFCIDs();
+                for (GeneticOPA Fgopa : FeedbackElements) {
+                    String Fgopaname = Fgopa.getOPAIdentifier(true);
+                    String GFCID = Fgopa.getFCID();
+                    if (Fpreds.contains(Fgopaname) && FCids.contains(GFCID)) {
+                        neededFeedbackElements.add(Fgopa);
+                    }
+                }
+                
+                // looop all feebacks that are included in the Chromosome
+                for (GeneticOPA FGopa : neededFeedbackElements) {
+                    if (GFP.contains(FGopa.getOPAIdentifier(true))) {
+                        String GopaName = Gopa.getOPAIdentifier(false);
+                        int GopaIndex = ElementNames.indexOf(GopaName);
+                        int PredIndex = ElementNames.indexOf(FGopa.getOPAIdentifier(false));
+                        if (PredIndex >= GopaIndex) {
+                            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility: 1returning False since the Gopa" + Gopa.getOPAIdentifier(false) + " is waiting for fc  " + "Predindex " + PredIndex + " GopaIndex " + GopaIndex);
+                            return false;
+                        }
+                    }
+                }
+                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility: the Gopa " + Gopa.getOPAIdentifier(false) + " needs to wait for an FC cycle " + GFP.get(0));
+            }
+            String GopaName = Gopa.getOPAIdentifier(false);
+            int GopaIndex = ElementNames.indexOf(GopaName);
+            ArrayList<String> Preds = Gopa.getPredOPAIDs();
+
+            for (String Pred : Preds) {
+                int PredIndex = ElementNames.indexOf(Pred);
+                int LastIndex = ElementNames.lastIndexOf(Pred);
+               
+                if (PredIndex == -1 || PredIndex >= GopaIndex) {
+                    // here check if the Predecessor doesnt exist ( which will nto happen in real , the 
+                    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility: 2returning False  for " + Gopa.getOPAIdentifier(false) + " Pred " + Pred + " Predindex " + PredIndex + " GopaIndex " + GopaIndex);
+                    return false;
+                }
+            }
+
+        }
+        return IsFeasable;
+    }
+
+    public ArrayList<GeneticOPA> getFeedbacksinChromosome() {
+        ArrayList<GeneticOPA> Al = new ArrayList<GeneticOPA>();
+        for (GeneticOPA Gopa : Elements) {
+            if (Gopa.isfeedback()) {
+                Al.add(Gopa);
+            }
+
+        }
+        return Al;
+    }
+
+    /**
+     * @return the Fitness
+     */
+    public Double getFitness() {
+
+        return Fitness;
+    }
+
+    /**
+     * @param Fitness the Fitness to set
+     */
+    public void setFitness(Double Fitness) {
+        this.Fitness = Fitness;
+    }
+
+    /**
+     * @return the GenParent
+     */
+    public Generation getGenParent() {
+        return GenParent;
+    }
+
+    /**
+     * @param GenParent the GenParent to set
+     */
+    public void setGenParent(Generation GenParent) {
+        this.GenParent = GenParent;
+    }
+
+    /**
+     * @return the GenProbability
+     */
+    public Double getGenProbability() {
+        return GenProbability;
+    }
+
+    /**
+     * @param GenProbability the GenProbability to set
+     */
+    public void setGenProbability(Double GenProbability) {
+        this.GenProbability = GenProbability;
+    }
+
+    public int getSizeofElemnts() {
+
+        return this.Elements.size();
+    }
+}
