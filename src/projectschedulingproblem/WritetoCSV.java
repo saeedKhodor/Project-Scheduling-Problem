@@ -68,8 +68,25 @@ public class WritetoCSV {
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(WritetoCSV.class.getName()).log(Level.SEVERE, null, ex);
         }   
+
+    }
+    public void WriteRcstofile(RecordScriptCapsule RSC){
         
-        
+         FileWriter writer;
+      
+        try {
+      
+            
+            writer = new FileWriter(this.CurrentDirectory + "\\" + "Script.txt",true);
+          
+                  writer.append(RSC.toString());
+
+            
+            writer.flush();
+            writer.close();
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(WritetoCSV.class.getName()).log(Level.SEVERE, null, ex);
+        }   
         
         
     }

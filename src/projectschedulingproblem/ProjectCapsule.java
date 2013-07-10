@@ -26,6 +26,10 @@ public class ProjectCapsule {
         this.Log=log;
         this.Log.appendToLog(Logger.INFORMATION, " Project Capsule has been Created");
     }
+     public ProjectCapsule(){
+        
+    }
+    
     /**
      * @return the DSMSheetname
      */

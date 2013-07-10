@@ -35,6 +35,9 @@ public class MainForm extends javax.swing.JFrame {
     public static String PrecFormat = "";
     public static boolean DeactivateTA = false;
     private GeneticsMain GM;
+    private boolean RecordProfileScript=false;
+    private RecordScriptCapsule RSC;
+    private boolean loadingfromScript=false;
 
     public MainForm() {
         initComponents();
@@ -44,6 +47,7 @@ public class MainForm extends javax.swing.JFrame {
         }
         PrecFormat = DFormat;
         Log = new Logger(this.LogTextArea);
+        RSC=new RecordScriptCapsule();
         //SheetPanel=new javax.swing.JPanel();
         // this.PortfolioPanel.setPreferredSize(new Dimension(587, 405));
         // this.PortfolioPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -90,17 +94,18 @@ public class MainForm extends javax.swing.JFrame {
         ResourceTableEndCellTF = new javax.swing.JTextField();
         ResourceTableStartCellTF = new javax.swing.JTextField();
         HasHeader = new javax.swing.JCheckBox();
+        SetDefaultvalues = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         ProcessFile = new javax.swing.JButton();
         BrowseExcel = new javax.swing.JButton();
         BrowseTextField = new javax.swing.JTextField();
-        SetDefaultvalues = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
         Usedmemory_LB = new javax.swing.JLabel();
         freememory_LB = new javax.swing.JLabel();
         totalmemory_LB = new javax.swing.JLabel();
         maxmemory_LB = new javax.swing.JLabel();
         Refresh = new javax.swing.JButton();
+        LoadScriptFile_B = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -121,12 +126,15 @@ public class MainForm extends javax.swing.JFrame {
         LogicalRunTimes_TF = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         Grouping_CHB = new javax.swing.JCheckBox();
+        Record_ScriptB = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         Report = new javax.swing.JMenuItem();
         OpenReportsFolder_B = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        RecordProfileScript_MI = new javax.swing.JMenuItem();
         Verbose = new javax.swing.JMenu();
         NoVerbose = new javax.swing.JMenuItem();
         Verbose1 = new javax.swing.JMenuItem();
@@ -226,7 +234,7 @@ public class MainForm extends javax.swing.JFrame {
                             .addGroup(ProjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(ReworkStartCellTF)
                                 .addComponent(ReworkEndCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+                .addGap(35, 35, 35))
         );
         ProjectPanelLayout.setVerticalGroup(
             ProjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,6 +310,13 @@ public class MainForm extends javax.swing.JFrame {
         HasHeader.setSelected(true);
         HasHeader.setText("has Header");
 
+        SetDefaultvalues.setText("set default Values");
+        SetDefaultvalues.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SetDefaultvaluesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ResourcePanelLayout = new javax.swing.GroupLayout(ResourcePanel);
         ResourcePanel.setLayout(ResourcePanelLayout);
         ResourcePanelLayout.setHorizontalGroup(
@@ -319,12 +334,21 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(HasHeader)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(ResourceSheetsList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ResourceTableStartCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ResourceTableEndCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ProcessResourcesB))
-                .addContainerGap())
+                    .addGroup(ResourcePanelLayout.createSequentialGroup()
+                        .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(ResourceSheetsList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ResourceTableStartCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(ResourcePanelLayout.createSequentialGroup()
+                        .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ResourceTableEndCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ProcessResourcesB))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SetDefaultvalues)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36))))
         );
         ResourcePanelLayout.setVerticalGroup(
             ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,15 +362,23 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(ResourceTableStartCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(1, 1, 1)
-                .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(ResourceTableEndCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(1, 1, 1)
                 .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(HasHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ProcessResourcesB))
-                .addGap(2, 2, 2))
+                    .addGroup(ResourcePanelLayout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(ResourceTableEndCellTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(1, 1, 1)
+                        .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(HasHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ProcessResourcesB))
+                        .addGap(2, 2, 2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ResourcePanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(ResourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(SetDefaultvalues)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12))))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 51)));
@@ -359,7 +391,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        BrowseExcel.setText("Browse Excel");
+        BrowseExcel.setText("Browse");
         BrowseExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BrowseExcelActionPerformed(evt);
@@ -367,13 +399,6 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         BrowseTextField.setEditable(false);
-
-        SetDefaultvalues.setText("set default Values");
-        SetDefaultvalues.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SetDefaultvaluesActionPerformed(evt);
-            }
-        });
 
         Usedmemory_LB.setText("Used Memory:");
 
@@ -390,6 +415,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        LoadScriptFile_B.setText("Load Script");
+        LoadScriptFile_B.setEnabled(false);
+        LoadScriptFile_B.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoadScriptFile_BActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -397,16 +430,18 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(ProcessFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SetDefaultvalues)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(BrowseExcel)
-                        .addGap(162, 162, 162)))
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(ProcessFile)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(LoadScriptFile_B)
+                            .addGap(35, 35, 35))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(BrowseExcel)
+                            .addGap(191, 191, 191)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(BrowseTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(freememory_LB)
                     .addComponent(totalmemory_LB)
@@ -414,11 +449,6 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(maxmemory_LB)
                     .addComponent(Refresh))
                 .addGap(97, 97, 97))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(BrowseTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(225, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -429,23 +459,21 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(freememory_LB)
                         .addGap(0, 0, 0)
                         .addComponent(Usedmemory_LB))
-                    .addComponent(BrowseExcel, javax.swing.GroupLayout.Alignment.LEADING))
-                .addGap(0, 0, 0)
-                .addComponent(totalmemory_LB)
-                .addGap(0, 0, 0)
-                .addComponent(maxmemory_LB)
+                    .addComponent(BrowseExcel))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(totalmemory_LB)
+                        .addGap(0, 0, 0)
+                        .addComponent(maxmemory_LB))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BrowseTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ProcessFile)
-                    .addComponent(SetDefaultvalues)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Refresh))
+                    .addComponent(Refresh)
+                    .addComponent(LoadScriptFile_B))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(40, 40, 40)
-                    .addComponent(BrowseTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(54, Short.MAX_VALUE)))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 255)));
@@ -559,7 +587,7 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(Feasibility_CHB, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Genetics_CB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, 0)
-                        .addComponent(TWOPOINT_CHB, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)))
+                        .addComponent(TWOPOINT_CHB, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -599,6 +627,13 @@ public class MainForm extends javax.swing.JFrame {
 
         Grouping_CHB.setText("Grouping");
 
+        Record_ScriptB.setText("Record Script");
+        Record_ScriptB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Record_ScriptBActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -616,6 +651,8 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(LogicalRunTimes_TF)
                         .addGap(18, 18, 18)
                         .addComponent(Grouping_CHB)))
+                .addGap(18, 18, 18)
+                .addComponent(Record_ScriptB)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -624,7 +661,8 @@ public class MainForm extends javax.swing.JFrame {
                 .addGap(4, 4, 4)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(PreperationMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PrepareforGeneticsB))
+                    .addComponent(PrepareforGeneticsB)
+                    .addComponent(Record_ScriptB))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LogicalRunTimes_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -661,6 +699,15 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jMenu2.add(OpenReportsFolder_B);
+        jMenu2.add(jSeparator1);
+
+        RecordProfileScript_MI.setText("Record Profile Script");
+        RecordProfileScript_MI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RecordProfileScript_MIActionPerformed(evt);
+            }
+        });
+        jMenu2.add(RecordProfileScript_MI);
 
         jMenuBar1.add(jMenu2);
 
@@ -748,7 +795,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void BrowseExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrowseExcelActionPerformed
 
-        FileFilter filter1 = new ExtensionFileFilter("xls and xlsx", new String[]{"xls", "xlsx"});
+        FileFilter filter1 = new ExtensionFileFilter("xls and xlsx and txt", new String[]{"xls", "xlsx","txt"});
         jFileChooser2.setFileFilter(filter1);
         jFileChooser2.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnVal = jFileChooser2.showOpenDialog(this);
@@ -759,11 +806,18 @@ public class MainForm extends javax.swing.JFrame {
             file = jFileChooser2.getSelectedFile();
             if (file.exists()) {
                 BrowseTextField.setText(file.getPath());
-                this.ProcessFile.setEnabled(true);
+                 if(BrowseTextField.getText().endsWith("txt")){
+            
+                    this.LoadScriptFile_B.setEnabled(true);
+                 }else {
+                       this.ProcessFile.setEnabled(true);
+                 }
+              
 
             }
         }
         CSVier = new WritetoCSV(this.Log);
+       
         // MainForm.CSVier.WritetoCSV("x1");
 
     }//GEN-LAST:event_BrowseExcelActionPerformed
@@ -779,7 +833,7 @@ public class MainForm extends javax.swing.JFrame {
             if (this.addSheetNamesToLists()) {
                 this.ProcessResourcesB.setEnabled(true);
             }
-
+            this.RSC.setFilePath(BrowseTextField.getText());
         } else {
             this.Log.appendToLog(Logger.PROCESSING, "MainForm: the Processing already has started ... ");
         }
@@ -818,7 +872,17 @@ public class MainForm extends javax.swing.JFrame {
 
         }
         boolean canproceed = Portfolio1.loadGlobalResouces(this.ResourceSheetsList.getSelectedItem().toString(), this.ResourceTableStartCellTF.getText(), this.ResourceTableEndCellTF.getText(), this.HasHeader.isSelected());
+       
+        
+        
         if (canproceed) {
+           
+           ResourceLoaderCapsule RLC= new ResourceLoaderCapsule();
+           RLC.setResourceSheetname(this.ResourceSheetsList.getSelectedItem().toString());
+           RLC.setResourceStartCell(this.ResourceTableStartCellTF.getText());
+           RLC.setResourceEndCell(this.ResourceTableEndCellTF.getText());
+           RLC.setHasHeader(this.HasHeader.isSelected());
+           this.RSC.getRLCs().add(RLC);
             this.ProcessProject.setEnabled(true);
         } else {
             this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessResourcesBActionPerformed: we have a problem in loading the resources ");
@@ -885,10 +949,12 @@ public class MainForm extends javax.swing.JFrame {
         this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : capsule :" + PC.toString());
 
         Portfolio1.loadProject(PC, true);// the hasheader is not used still in this function
+        
+        this.RSC.getPCs().add(PC);
         updateRuntimemoryLabel();
 
     }//GEN-LAST:event_ProcessProjectActionPerformed
-
+        
     private void SetDefaultvaluesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetDefaultvaluesActionPerformed
 
         int x = Integer.parseInt(jTextField1.getText());
@@ -930,6 +996,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_SetDefaultvaluesActionPerformed
 
     private void PrepareforGeneticsBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrepareforGeneticsBActionPerformed
+        
         updateRuntimemoryLabel();
         final long startTime = System.currentTimeMillis();
         this.GM = null;
@@ -1064,6 +1131,40 @@ public class MainForm extends javax.swing.JFrame {
     private void RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshActionPerformed
         this.updateRuntimemoryLabel();
     }//GEN-LAST:event_RefreshActionPerformed
+
+    private void RecordProfileScript_MIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordProfileScript_MIActionPerformed
+        if (RecordProfileScript) {
+            RecordProfileScript = false;
+
+        } else {
+
+            RecordProfileScript = true;
+
+        }
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_RecordProfileScript_MIActionPerformed
+
+    private void Record_ScriptBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Record_ScriptBActionPerformed
+        CSVier.WriteRcstofile(RSC);
+        
+    }//GEN-LAST:event_Record_ScriptBActionPerformed
+
+    private void LoadScriptFile_BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadScriptFile_BActionPerformed
+        RecordScriptCapsule INITRSC=new RecordScriptCapsule(this.BrowseTextField.getText());
+        this.Portfolio1 = new Portfolio(this, Log,INITRSC.getFilePath() );
+        
+        for(ResourceLoaderCapsule RLc:INITRSC.getRLCs()){
+               Portfolio1.loadGlobalResouces(RLc.getResourceSheetname(), RLc.getResourceStartCell(), RLc.getResourceEndCell(), RLc.isHasHeader());
+        }
+         for(ProjectCapsule Pc:INITRSC.getPCs()){
+              // Portfolio1.loadGlobalResouces(RLc.getResourceSheetname(), RLc.getResourceStartCell(), RLc.getResourceEndCell(), RLc.isHasHeader());
+             Portfolio1.loadProject(Pc, true);
+         }
+          this.Log.appendToLog(Logger.INFORMATION, "Main Form : LoadScriptFile_BActionPerformed : Loaded the script file succesfully");
+     
+        
+    }//GEN-LAST:event_LoadScriptFile_BActionPerformed
 
     private void VerboseItems(int i) {
 
@@ -1221,6 +1322,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JComboBox Genetics_CB;
     private javax.swing.JCheckBox Grouping_CHB;
     private javax.swing.JCheckBox HasHeader;
+    private javax.swing.JButton LoadScriptFile_B;
     private javax.swing.JTextArea LogTextArea;
     private javax.swing.JTextField LogicalRunTimes_TF;
     private javax.swing.JTextField MutationFactorTF;
@@ -1234,6 +1336,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton ProcessProject;
     private javax.swing.JButton ProcessResourcesB;
     private javax.swing.JPanel ProjectPanel;
+    private javax.swing.JMenuItem RecordProfileScript_MI;
+    private javax.swing.JButton Record_ScriptB;
     private javax.swing.JButton Refresh;
     private javax.swing.JMenuItem Report;
     private javax.swing.JPanel ResourcePanel;
@@ -1275,6 +1379,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel maxmemory_LB;
     private javax.swing.JLabel totalmemory_LB;
