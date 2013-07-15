@@ -213,8 +213,6 @@ public Generation getHighetRankGenerationbyID(String ID){
                 GTs[i] = t;
                 t.start();
 
-
-
             }
             for (int i = 0; i < GPs.size(); i++) {
                 GTs[i].join();
@@ -257,15 +255,17 @@ public Generation getHighetRankGenerationbyID(String ID){
             MainForm.CSVier.writeGeneticstoCSV(Gen,false);
             
         }
+        MainForm.CSVier. WriteFinalResultsExcel(null,true);
         for(String ID:IDs){
          Generation gen=this.getHighetRankGenerationbyID(ID);
+         
          MainForm.CSVier. WriteFinalResultsExcel(gen,false);
             
         }
        
         this.Log.appendToLog(Logger.INFORMATION, "GeneticsMain : ProcessGps : GVC tostring " + GVC.toString());
 
-        this.Log.appendToLog(Logger.HAS_TO_SHOW, "GeneticsMain : ProcessGps : DUMPING MEMORYYYYYGps");
+        this.Log.appendToLog(Logger.HAS_TO_SHOW, "GeneticsMain : ProcessGps : DUMPING MEMORYYYYYGps Process Finished Successfully");
         this.ClearGps();
         
 

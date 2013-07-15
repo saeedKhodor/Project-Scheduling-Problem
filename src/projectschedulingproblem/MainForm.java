@@ -9,6 +9,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import javax.swing.InputVerifier;
@@ -35,9 +36,9 @@ public class MainForm extends javax.swing.JFrame {
     public static String PrecFormat = "";
     public static boolean DeactivateTA = false;
     private GeneticsMain GM;
-    private boolean RecordProfileScript=false;
+    private boolean RecordProfileScript = false;
     private RecordScriptCapsule RSC;
-    private boolean loadingfromScript=false;
+    private boolean loadingfromScript = false;
 
     public MainForm() {
         initComponents();
@@ -47,11 +48,11 @@ public class MainForm extends javax.swing.JFrame {
         }
         PrecFormat = DFormat;
         Log = new Logger(this.LogTextArea);
-        RSC=new RecordScriptCapsule();
+        RSC = new RecordScriptCapsule();
         //SheetPanel=new javax.swing.JPanel();
         // this.PortfolioPanel.setPreferredSize(new Dimension(587, 405));
         // this.PortfolioPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
+        setdefaultvaluesforGenetics();
     }
 
     /**
@@ -120,6 +121,7 @@ public class MainForm extends javax.swing.JFrame {
         Genetics_CB = new javax.swing.JComboBox();
         TWOPOINT_CHB = new javax.swing.JCheckBox();
         ByPassFittest = new javax.swing.JCheckBox();
+        Tournamentselection_B = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         PrepareforGeneticsB = new javax.swing.JButton();
         PreperationMethod = new javax.swing.JComboBox();
@@ -515,6 +517,7 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         ApplyGenetics_B.setText("Apply");
+        ApplyGenetics_B.setEnabled(false);
         ApplyGenetics_B.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ApplyGenetics_BActionPerformed(evt);
@@ -539,6 +542,8 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         ByPassFittest.setText("Bypass Fittest");
+
+        Tournamentselection_B.setText("Tournament selection");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -565,8 +570,10 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(TWOPOINT_CHB)
                             .addComponent(Feasibility_CHB))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Genetics_CB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(ApplyGenetics_B))
+                        .addComponent(Genetics_CB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(ApplyGenetics_B))
+                    .addComponent(Tournamentselection_B))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -585,24 +592,26 @@ public class MainForm extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Feasibility_CHB, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Genetics_CB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(Genetics_CB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ApplyGenetics_B))
                         .addGap(0, 0, 0)
-                        .addComponent(TWOPOINT_CHB, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(TWOPOINT_CHB, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel13)
                             .addComponent(PopulationsizeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(4, 4, 4))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(4, 4, 4)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(NumberofGenerationsTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14))
+                        .addGap(40, 40, 40))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(ByPassFittest, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(NumberofGenerationsTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel14)
-                    .addComponent(ApplyGenetics_B))
-                .addGap(32, 32, 32))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Tournamentselection_B, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(46, 46, 46))))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 255, 204)));
@@ -792,10 +801,15 @@ public class MainForm extends javax.swing.JFrame {
         System.gc();
         System.exit(0);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+private final void setdefaultvaluesforGenetics(){
+            this.MutationFactorTF.setText("0.02");
+            this.CrossOverFactorTF.setText("0.7");
+            this.PopulationsizeTF.setText("20");
+            this.NumberofGenerationsTF.setText("10");
+}
     private void BrowseExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrowseExcelActionPerformed
 
-        FileFilter filter1 = new ExtensionFileFilter("xls and xlsx and txt", new String[]{"xls", "xlsx","txt"});
+        FileFilter filter1 = new ExtensionFileFilter("xls and xlsx and txt", new String[]{"xls", "xlsx", "txt"});
         jFileChooser2.setFileFilter(filter1);
         jFileChooser2.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnVal = jFileChooser2.showOpenDialog(this);
@@ -806,38 +820,43 @@ public class MainForm extends javax.swing.JFrame {
             file = jFileChooser2.getSelectedFile();
             if (file.exists()) {
                 BrowseTextField.setText(file.getPath());
-                 if(BrowseTextField.getText().endsWith("txt")){
-            
+                if (BrowseTextField.getText().endsWith("txt")) {
+
                     this.LoadScriptFile_B.setEnabled(true);
-                 }else {
-                       this.ProcessFile.setEnabled(true);
-                 }
-              
+                } else {
+                    this.ProcessFile.setEnabled(true);
+                }
+
 
             }
         }
         CSVier = new WritetoCSV(this.Log);
-       
+
         // MainForm.CSVier.WritetoCSV("x1");
 
     }//GEN-LAST:event_BrowseExcelActionPerformed
 
     private void ProcessFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProcessFileActionPerformed
-        if (!ProcessingStarted) {
-            ProcessingStarted = true;
-            Log.appendToLog(Logger.PROCESSING, "MainForm: Processing has started...");
-            // this.PortfolioPanel.setVisible(false);
-            // entry Point of processing
-            this.Portfolio1 = new Portfolio(this, Log, this.BrowseTextField.getText());
+        try {
+            if (!ProcessingStarted) {
+                ProcessingStarted = true;
+                Log.appendToLog(Logger.PROCESSING, "MainForm: Processing has started...");
+                // this.PortfolioPanel.setVisible(false);
+                // entry Point of processing
+                this.Portfolio1 = new Portfolio(this, Log, this.BrowseTextField.getText());
 
-            if (this.addSheetNamesToLists()) {
-                this.ProcessResourcesB.setEnabled(true);
+                if (this.addSheetNamesToLists()) {
+                    this.ProcessResourcesB.setEnabled(true);
+                }
+                this.RSC.setFilePath(BrowseTextField.getText());
+            } else {
+                this.Log.appendToLog(Logger.PROCESSING, "MainForm: the Processing already has started ... ");
             }
-            this.RSC.setFilePath(BrowseTextField.getText());
-        } else {
-            this.Log.appendToLog(Logger.PROCESSING, "MainForm: the Processing already has started ... ");
+            updateRuntimemoryLabel();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, " Error Has occured in the process,with the following details " + e.getMessage());
+            CSVier.WriteError(e.getMessage());
         }
-        updateRuntimemoryLabel();
     }//GEN-LAST:event_ProcessFileActionPerformed
 
     private void Verbose1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Verbose1ActionPerformed
@@ -865,169 +884,185 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_NoVerboseActionPerformed
 
     private void ProcessResourcesBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProcessResourcesBActionPerformed
-        updateRuntimemoryLabel();
-        if (this.ResourceTableEndCellTF.getText().equals("") || this.ResourceTableStartCellTF.getText().equals("")) {
-            this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessResourcesBActionPerformed: please specify a value in the startingcell or endingcell ");
-            return;
+        try {
 
+
+            updateRuntimemoryLabel();
+            if (this.ResourceTableEndCellTF.getText().equals("") || this.ResourceTableStartCellTF.getText().equals("")) {
+                this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessResourcesBActionPerformed: please specify a value in the startingcell or endingcell ");
+                return;
+
+            }
+            boolean canproceed = Portfolio1.loadGlobalResouces(this.ResourceSheetsList.getSelectedItem().toString(), this.ResourceTableStartCellTF.getText(), this.ResourceTableEndCellTF.getText(), this.HasHeader.isSelected());
+            if (canproceed) {
+
+                ResourceLoaderCapsule RLC = new ResourceLoaderCapsule();
+                RLC.setResourceSheetname(this.ResourceSheetsList.getSelectedItem().toString());
+                RLC.setResourceStartCell(this.ResourceTableStartCellTF.getText());
+                RLC.setResourceEndCell(this.ResourceTableEndCellTF.getText());
+                RLC.setHasHeader(this.HasHeader.isSelected());
+                this.RSC.getRLCs().add(RLC);
+                this.ProcessProject.setEnabled(true);
+                this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessResourcesBActionPerformed: Resources Loaded Successfully ");
+            } else {
+                this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessResourcesBActionPerformed: we have a problem in loading the resources ");
+            }
+            updateRuntimemoryLabel();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, " Error Has occured in the process,with the following details " + e.getMessage());
+            CSVier.WriteError(e.getMessage());
         }
-        boolean canproceed = Portfolio1.loadGlobalResouces(this.ResourceSheetsList.getSelectedItem().toString(), this.ResourceTableStartCellTF.getText(), this.ResourceTableEndCellTF.getText(), this.HasHeader.isSelected());
-       
-        
-        
-        if (canproceed) {
-           
-           ResourceLoaderCapsule RLC= new ResourceLoaderCapsule();
-           RLC.setResourceSheetname(this.ResourceSheetsList.getSelectedItem().toString());
-           RLC.setResourceStartCell(this.ResourceTableStartCellTF.getText());
-           RLC.setResourceEndCell(this.ResourceTableEndCellTF.getText());
-           RLC.setHasHeader(this.HasHeader.isSelected());
-           this.RSC.getRLCs().add(RLC);
-            this.ProcessProject.setEnabled(true);
-        } else {
-            this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessResourcesBActionPerformed: we have a problem in loading the resources ");
-        }
-        updateRuntimemoryLabel();
     }//GEN-LAST:event_ProcessResourcesBActionPerformed
 
     private void ProcessProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProcessProjectActionPerformed
-        updateRuntimemoryLabel();
-        boolean somethingisempty = false;
-        if (this.DSMSheetsList.getSelectedItem().toString().equals("")) {
-            somethingisempty = true;
-        }
+        try {
+            updateRuntimemoryLabel();
+            boolean somethingisempty = false;
+            if (this.DSMSheetsList.getSelectedItem().toString().equals("")) {
+                somethingisempty = true;
+            }
 
-        if (this.DSMStartCellTF.getText().equals("")) {
-            somethingisempty = true;
-        }
-        if (this.DSMEndCellTF.getText().equals("")) {
-            somethingisempty = true;
-        }
+            if (this.DSMStartCellTF.getText().equals("")) {
+                somethingisempty = true;
+            }
+            if (this.DSMEndCellTF.getText().equals("")) {
+                somethingisempty = true;
+            }
 
-        if (this.ActivitiesSheetsList.getSelectedItem().toString().equals("")) {
-            somethingisempty = true;
+            if (this.ActivitiesSheetsList.getSelectedItem().toString().equals("")) {
+                somethingisempty = true;
+            }
+            if (this.ActivitiesStartCellTF.getText().equals("")) {
+                somethingisempty = true;
+            }
+            if (this.ActivitiesEndCellTF.getText().equals("")) {
+                somethingisempty = true;
+            }
+
+            if (this.ReworkSheetsList.getSelectedItem().toString().equals("")) {
+                somethingisempty = true;
+            }
+            if (this.ReworkStartCellTF.getText().equals("")) {
+                somethingisempty = true;
+            }
+            if (this.ReworkEndCellTF.getText().equals("")) {
+                somethingisempty = true;
+            }
+            if (somethingisempty) {
+                this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessProjectActionPerformed: please specify all the values in the fields ");
+                return;
+            }
+
+            ProjectCapsule PC = new ProjectCapsule(Log);
+            PC.setDSMSheetname(this.DSMSheetsList.getSelectedItem().toString());
+            PC.setDSMStartCell(this.DSMStartCellTF.getText());
+            PC.setDSMEndCell(this.DSMEndCellTF.getText());
+            this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : the DSM in the project Capsule has been set");
+            PC.setActivitiesSheetname(this.ActivitiesSheetsList.getSelectedItem().toString());
+            PC.setActivitiesStartCell(this.ActivitiesStartCellTF.getText());
+            PC.setActivitiesEndCell(this.ActivitiesEndCellTF.getText());
+            this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : the Activities in the project Capsule has been set");
+            PC.setReworkSheetname(this.ReworkSheetsList.getSelectedItem().toString());
+            PC.setReworkStartCell(this.ReworkStartCellTF.getText());
+            PC.setReworkEndCell(this.ReworkEndCellTF.getText());
+            this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : the Rework in the project Capsule has been set");
+
+            this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : capsule :" + PC.toString());
+
+            Portfolio1.loadProject(PC, true);// the hasheader is not used still in this function
+
+            this.RSC.getPCs().add(PC);
+              this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : capsule :" + PC.toString());
+            updateRuntimemoryLabel();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, " Error Has occured in the process,with the following details " + e.getMessage());
+            CSVier.WriteError(e.getMessage());
         }
-        if (this.ActivitiesStartCellTF.getText().equals("")) {
-            somethingisempty = true;
-        }
-        if (this.ActivitiesEndCellTF.getText().equals("")) {
-            somethingisempty = true;
-        }
-
-        if (this.ReworkSheetsList.getSelectedItem().toString().equals("")) {
-            somethingisempty = true;
-        }
-        if (this.ReworkStartCellTF.getText().equals("")) {
-            somethingisempty = true;
-        }
-        if (this.ReworkEndCellTF.getText().equals("")) {
-            somethingisempty = true;
-        }
-
-
-
-        if (somethingisempty) {
-            this.Log.appendToLog(Logger.HAS_TO_SHOW, "MainForm: ProcessProjectActionPerformed: please specify all the values in the fields ");
-            return;
-
-        }
-
-        ProjectCapsule PC = new ProjectCapsule(Log);
-        PC.setDSMSheetname(this.DSMSheetsList.getSelectedItem().toString());
-        PC.setDSMStartCell(this.DSMStartCellTF.getText());
-        PC.setDSMEndCell(this.DSMEndCellTF.getText());
-        this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : the DSM in the project Capsule has been set");
-        PC.setActivitiesSheetname(this.ActivitiesSheetsList.getSelectedItem().toString());
-        PC.setActivitiesStartCell(this.ActivitiesStartCellTF.getText());
-        PC.setActivitiesEndCell(this.ActivitiesEndCellTF.getText());
-        this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : the Activities in the project Capsule has been set");
-        PC.setReworkSheetname(this.ReworkSheetsList.getSelectedItem().toString());
-        PC.setReworkStartCell(this.ReworkStartCellTF.getText());
-        PC.setReworkEndCell(this.ReworkEndCellTF.getText());
-        this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : the Rework in the project Capsule has been set");
-
-        this.Log.appendToLog(Logger.INFORMATION, "Main Form : ProcessProjectActionPerformed : capsule :" + PC.toString());
-
-        Portfolio1.loadProject(PC, true);// the hasheader is not used still in this function
-        
-        this.RSC.getPCs().add(PC);
-        updateRuntimemoryLabel();
 
     }//GEN-LAST:event_ProcessProjectActionPerformed
-        
+
     private void SetDefaultvaluesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetDefaultvaluesActionPerformed
+        try {
+            int x = Integer.parseInt(jTextField1.getText());
+            //new WritetoCSV(this.Log);
+            if (x == 1) {
+                this.ResourceTableStartCellTF.setText("A1");
+                this.ResourceTableEndCellTF.setText("B13");
+                this.ActivitiesStartCellTF.setText("A1");
+                this.ActivitiesEndCellTF.setText("I11");
+                this.DSMStartCellTF.setText("A1");
+                this.DSMEndCellTF.setText("L11");
+                this.ReworkStartCellTF.setText("A17");
+                this.ReworkEndCellTF.setText("L27");
+            } else if (x == 2) {
+                this.ResourceTableStartCellTF.setText("A1");
+                this.ResourceTableEndCellTF.setText("B13");
+                this.ActivitiesStartCellTF.setText("A15");
+                this.ActivitiesEndCellTF.setText("I32");
+                this.DSMStartCellTF.setText("A1");
+                this.DSMEndCellTF.setText("S18");
+                this.ReworkStartCellTF.setText("A22");
+                this.ReworkEndCellTF.setText("S39");
+            } else if (x == 3) {
+                this.ResourceTableStartCellTF.setText("A1");
+                this.ResourceTableEndCellTF.setText("B13");
+                this.ActivitiesStartCellTF.setText("A36");
+                this.ActivitiesEndCellTF.setText("I69");
+                this.DSMStartCellTF.setText("A1");
+                this.DSMEndCellTF.setText("AI34");
+                this.ReworkStartCellTF.setText("A39");
+                this.ReworkEndCellTF.setText("AI72");
+            }
+            this.MutationFactorTF.setText("0.02");
+            this.CrossOverFactorTF.setText("0.7");
+            this.PopulationsizeTF.setText("20");
+            this.NumberofGenerationsTF.setText("10");
 
-        int x = Integer.parseInt(jTextField1.getText());
-        //new WritetoCSV(this.Log);
-        if (x == 1) {
-            this.ResourceTableStartCellTF.setText("A1");
-            this.ResourceTableEndCellTF.setText("B13");
-            this.ActivitiesStartCellTF.setText("A1");
-            this.ActivitiesEndCellTF.setText("I11");
-            this.DSMStartCellTF.setText("A1");
-            this.DSMEndCellTF.setText("L11");
-            this.ReworkStartCellTF.setText("A17");
-            this.ReworkEndCellTF.setText("L27");
-        } else if (x == 2) {
-            this.ResourceTableStartCellTF.setText("A1");
-            this.ResourceTableEndCellTF.setText("B13");
-            this.ActivitiesStartCellTF.setText("A15");
-            this.ActivitiesEndCellTF.setText("I32");
-            this.DSMStartCellTF.setText("A1");
-            this.DSMEndCellTF.setText("S18");
-            this.ReworkStartCellTF.setText("A22");
-            this.ReworkEndCellTF.setText("S39");
-        } else if (x == 3) {
-            this.ResourceTableStartCellTF.setText("A1");
-            this.ResourceTableEndCellTF.setText("B13");
-            this.ActivitiesStartCellTF.setText("A36");
-            this.ActivitiesEndCellTF.setText("I69");
-            this.DSMStartCellTF.setText("A1");
-            this.DSMEndCellTF.setText("AI34");
-            this.ReworkStartCellTF.setText("A39");
-            this.ReworkEndCellTF.setText("AI72");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, " Error Has occured in the process,with the following details " + e.getMessage());
+            CSVier.WriteError(e.getMessage());
         }
-        this.MutationFactorTF.setText("0.02");
-        this.CrossOverFactorTF.setText("0.7");
-        this.PopulationsizeTF.setText("20");
-        this.NumberofGenerationsTF.setText("10");
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_SetDefaultvaluesActionPerformed
 
     private void PrepareforGeneticsBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrepareforGeneticsBActionPerformed
-        
-        updateRuntimemoryLabel();
-        final long startTime = System.currentTimeMillis();
-        this.GM = null;
-        System.gc();
-        this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        int Logicalfactor = Integer.parseInt(this.LogicalRunTimes_TF.getText());
-        if (Logicalfactor >= 100) {
-            JOptionPane.showMessageDialog(this, " the value is large for the Heap space of the TextArea at the current Verbose level, so the level ");
-            DeactivateTA = true;
+        try {
+            updateRuntimemoryLabel();
+            final long startTime = System.currentTimeMillis();
+            this.GM = null;
+            System.gc();
+            this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            int Logicalfactor = Integer.parseInt(this.LogicalRunTimes_TF.getText());
+            if (Logicalfactor >= 100) {
+                JOptionPane.showMessageDialog(this, " the value is large for the Heap space of the TextArea at the current Verbose level, so the level ");
+                DeactivateTA = true;
 
+            }
+            if (PreperationMethod.getSelectedItem().toString().equalsIgnoreCase("Logical")) {
+                LogicalMethod LM = new LogicalMethod(Log, Portfolio1);
+                LM.StartTSs(Logicalfactor);
+                //LM.generateReport();
+                this.GM = new GeneticsMain(Log, LM, this.Grouping_CHB.isSelected());
+            }
+            if (PreperationMethod.getSelectedItem().toString().equalsIgnoreCase("Exhaustive")) {
+
+                ExhaustiveMethod EM = new ExhaustiveMethod(Log, Portfolio1);
+                EM.StartExhaustives();
+                this.GM = new GeneticsMain(Log, EM);
+            }
+            final long EndTime = System.currentTimeMillis();
+
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            long millis = (EndTime - startTime);
+
+            JOptionPane.showMessageDialog(this, " Time of excution is " + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
+            CSVier.WriteFinalExcution("PrepareforGeneticsBActionPerformed," + String.format("%d min:%d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))) + " ,Logical Factor " + Logicalfactor, false);
+            updateRuntimemoryLabel();
+this.ApplyGenetics_B.setEnabled(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, " Error Has occured in the process,with the following details " + e.getMessage());
+            CSVier.WriteError(e.getMessage());
         }
-        if (PreperationMethod.getSelectedItem().toString().equalsIgnoreCase("Logical")) {
-            LogicalMethod LM = new LogicalMethod(Log, Portfolio1);
-            LM.StartTSs(Logicalfactor);
-            //LM.generateReport();
-            this.GM = new GeneticsMain(Log, LM, this.Grouping_CHB.isSelected());
-        }
-        if (PreperationMethod.getSelectedItem().toString().equalsIgnoreCase("Exhaustive")) {
 
-            ExhaustiveMethod EM = new ExhaustiveMethod(Log, Portfolio1);
-            EM.StartExhaustives();
-            this.GM = new GeneticsMain(Log, EM);
-        }
-        final long EndTime = System.currentTimeMillis();
-
-        this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        long millis = (EndTime - startTime);
-
-        JOptionPane.showMessageDialog(this, " Time of excution is " + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
-        CSVier.WriteFinalExcution("PrepareforGeneticsBActionPerformed," + String.format("%d min:%d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))) + " ,Logical Factor " + Logicalfactor, false);
-        updateRuntimemoryLabel();
     }//GEN-LAST:event_PrepareforGeneticsBActionPerformed
 
     private void ReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportActionPerformed
@@ -1073,43 +1108,51 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Feasibility_CHBActionPerformed
 
     private void ApplyGenetics_BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApplyGenetics_BActionPerformed
+        try {
+            updateRuntimemoryLabel();
+            final long startTime = System.currentTimeMillis();
+            float CrossOverFactor = (float) Double.parseDouble(this.CrossOverFactorTF.getText());
+            float MutationFactor = (float) Double.parseDouble(this.MutationFactorTF.getText());
+            float Populationsize = (float) Double.parseDouble(this.PopulationsizeTF.getText());
+            float NumberofGenerations = (float) Double.parseDouble(this.NumberofGenerationsTF.getText());
+            boolean FeasilbiltyON = this.Feasibility_CHB.isSelected();
+            boolean byPassFittest = this.ByPassFittest.isSelected();
+            if (NumberofGenerations > 10 || Populationsize > 20) {
+                JOptionPane.showMessageDialog(this, " the value is large for the Heap space of the TextArea at the current Verbose level ");
+                DeactivateTA = true;
+            }
 
-        updateRuntimemoryLabel();
-        final long startTime = System.currentTimeMillis();
-        float CrossOverFactor = (float) Double.parseDouble(this.CrossOverFactorTF.getText());
-        float MutationFactor = (float) Double.parseDouble(this.MutationFactorTF.getText());
-        float Populationsize = (float) Double.parseDouble(this.PopulationsizeTF.getText());
-        float NumberofGenerations = (float) Double.parseDouble(this.NumberofGenerationsTF.getText());
-        boolean FeasilbiltyON = this.Feasibility_CHB.isSelected();
-        boolean byPassFittest = this.ByPassFittest.isSelected();
+            String R = this.Genetics_CB.getSelectedItem().toString();
+            int FirstGenChoosingMode;
+            if (R.equalsIgnoreCase("Random")) {
+                FirstGenChoosingMode = GeneticsMain.RANDOMFIRSTGEN;
+            } else {
+                FirstGenChoosingMode = GeneticsMain.NOTRANDOMFIRSTGEN;
 
-        String R = this.Genetics_CB.getSelectedItem().toString();
-        int FirstGenChoosingMode;
-        if (R.equalsIgnoreCase("Random")) {
-            FirstGenChoosingMode = GeneticsMain.RANDOMFIRSTGEN;
-        } else {
-            FirstGenChoosingMode = GeneticsMain.NOTRANDOMFIRSTGEN;
+            }
 
+            int CrossoverMode;
+            if (TWOPOINT_CHB.isSelected()) {
+                CrossoverMode = GeneticsMain.TWOPOINTCROSSOVERMODE;
+            } else {
+                CrossoverMode = GeneticsMain.ONEPOINTCROSSOVERMODE;
+            }
+            GeneticsVariablesCapsule GVC = new GeneticsVariablesCapsule(CrossOverFactor, MutationFactor, Populationsize, NumberofGenerations, FeasilbiltyON, CrossoverMode, FirstGenChoosingMode, byPassFittest);
+
+            this.GM.ProcessGps(GVC);
+
+            final long EndTime = System.currentTimeMillis();
+
+            long millis = (EndTime - startTime);
+            JOptionPane.showMessageDialog(this, " Time of excution is " + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
+            CSVier.WriteFinalExcution("ApplyGenetics," + String.format("%d min:%d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))) + "," + GVC.toString(), false);
+            //this.GM=null;
+            System.gc();
+            updateRuntimemoryLabel();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, " Error Has occured in the process,with the following details " + e.getMessage());
+            CSVier.WriteError(e.getMessage());
         }
-
-        int CrossoverMode;
-        if (TWOPOINT_CHB.isSelected()) {
-            CrossoverMode = GeneticsMain.TWOPOINTCROSSOVERMODE;
-        } else {
-            CrossoverMode = GeneticsMain.ONEPOINTCROSSOVERMODE;
-        }
-        GeneticsVariablesCapsule GVC = new GeneticsVariablesCapsule(CrossOverFactor, MutationFactor, Populationsize, NumberofGenerations, FeasilbiltyON, CrossoverMode, FirstGenChoosingMode, byPassFittest);
-
-        this.GM.ProcessGps(GVC);
-
-        final long EndTime = System.currentTimeMillis();
-
-        long millis = (EndTime - startTime);
-        JOptionPane.showMessageDialog(this, " Time of excution is " + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
-        CSVier.WriteFinalExcution("ApplyGenetics," + String.format("%d min:%d sec", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))) + "," + GVC.toString(), false);
-        //this.GM=null;
-        System.gc();
-        updateRuntimemoryLabel();
     }//GEN-LAST:event_ApplyGenetics_BActionPerformed
 
     private void CrossOverFactorTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrossOverFactorTFActionPerformed
@@ -1133,37 +1176,40 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_RefreshActionPerformed
 
     private void RecordProfileScript_MIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordProfileScript_MIActionPerformed
-        if (RecordProfileScript) {
-            RecordProfileScript = false;
-
-        } else {
-
-            RecordProfileScript = true;
-
-        }
-
-        // TODO add your handling code here:
+         CSVier.WriteRcstofile(RSC);
+          JOptionPane.showMessageDialog(this, " Script Written Successfully");
+    
     }//GEN-LAST:event_RecordProfileScript_MIActionPerformed
 
     private void Record_ScriptBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Record_ScriptBActionPerformed
         CSVier.WriteRcstofile(RSC);
-        
+ JOptionPane.showMessageDialog(this, " Script Written Successfully  " );
     }//GEN-LAST:event_Record_ScriptBActionPerformed
 
     private void LoadScriptFile_BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadScriptFile_BActionPerformed
-        RecordScriptCapsule INITRSC=new RecordScriptCapsule(this.BrowseTextField.getText());
-        this.Portfolio1 = new Portfolio(this, Log,INITRSC.getFilePath() );
-        
-        for(ResourceLoaderCapsule RLc:INITRSC.getRLCs()){
-               Portfolio1.loadGlobalResouces(RLc.getResourceSheetname(), RLc.getResourceStartCell(), RLc.getResourceEndCell(), RLc.isHasHeader());
+        try {
+
+            RecordScriptCapsule INITRSC = new RecordScriptCapsule(this.BrowseTextField.getText());
+            this.Portfolio1 = new Portfolio(this, Log, INITRSC.getFilePath());
+            boolean ResLoadedCorrectly=false;
+            for (Iterator<ResourceLoaderCapsule> it = INITRSC.getRLCs().iterator(); it.hasNext();) {
+                ResourceLoaderCapsule RLc = it.next();
+                ResLoadedCorrectly=Portfolio1.loadGlobalResouces(RLc.getResourceSheetname(), RLc.getResourceStartCell(), RLc.getResourceEndCell(), RLc.isHasHeader());
+                if(ResLoadedCorrectly){
+                    this.Log.appendToLog(Logger.HAS_TO_SHOW, "Main Form : LoadScriptFile_BActionPerformed : Loaded the Resources succesfully");
+                }
+            }
+            for (ProjectCapsule Pc : INITRSC.getPCs()) {
+                // Portfolio1.loadGlobalResouces(RLc.getResourceSheetname(), RLc.getResourceStartCell(), RLc.getResourceEndCell(), RLc.isHasHeader());
+                Portfolio1.loadProject(Pc, true);
+            }
+            this.Log.appendToLog(Logger.HAS_TO_SHOW, "Main Form : LoadScriptFile_BActionPerformed : Loaded the script file succesfully");
+            this.Record_ScriptB.setEnabled(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, " Error Has occured in the process,with the following details " + e.getMessage());
+            CSVier.WriteError(e.getMessage());
         }
-         for(ProjectCapsule Pc:INITRSC.getPCs()){
-              // Portfolio1.loadGlobalResouces(RLc.getResourceSheetname(), RLc.getResourceStartCell(), RLc.getResourceEndCell(), RLc.isHasHeader());
-             Portfolio1.loadProject(Pc, true);
-         }
-          this.Log.appendToLog(Logger.INFORMATION, "Main Form : LoadScriptFile_BActionPerformed : Loaded the script file succesfully");
-     
-        
+
     }//GEN-LAST:event_LoadScriptFile_BActionPerformed
 
     private void VerboseItems(int i) {
@@ -1349,6 +1395,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTextField ReworkStartCellTF;
     private javax.swing.JButton SetDefaultvalues;
     private javax.swing.JCheckBox TWOPOINT_CHB;
+    private javax.swing.JCheckBox Tournamentselection_B;
     private javax.swing.JLabel Usedmemory_LB;
     private javax.swing.JMenu Verbose;
     private javax.swing.JMenuItem Verbose1;

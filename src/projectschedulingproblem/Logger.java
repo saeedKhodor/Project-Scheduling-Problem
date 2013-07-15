@@ -23,7 +23,7 @@ public class Logger {
  public static final int INFORMATION = 3;
  
  private JTextArea LoggerTextArea;
- private int Verbose=3;//highest verbose is 3 meaning that 3 is will be the verbised 
+ private int Verbose=0;//highest verbose is 3 meaning that 3 is will be the verbised 
 
 
 
@@ -37,7 +37,7 @@ public void appendToLog(int verbose, String Str ){
    int OrigVerbose=this.getVerbose();
    int Verbse=OrigVerbose;
     if(MainForm.DeactivateTA){
-      Verbse=1;
+      Verbse=0;
    }
     if(verbose<=Verbse){
        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

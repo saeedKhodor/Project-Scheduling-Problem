@@ -108,17 +108,17 @@ return Float.valueOf(DFormat.format(Result));
            }
           
         }else{
-          getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : filloutResourceHashMap : There is a Problem in the ExcelSheet the resources and the qtys are not equal in " + Projectparent.getProjectName());
+          getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : filloutResourceHashMap : There is a Problem in the ExcelSheet the resources and the qtys are not equal in " + Projectparent.getProjectName());
         }
                 
     }
     public void convertPredessorIdstoPAIdentifiers(){
-        getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertPredessorIdstoPAIdentifiers : PredecesorsIDs size is "+PredecesorsIDs.size() );
+        getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertPredessorIdstoPAIdentifiers : PredecesorsIDs size is "+PredecesorsIDs.size() );
    
         for(String Ref :PredecesorsIDs){
            
             this.getPredecesorsIDsPAIdentfiers().add(this.Projectparent.getPAbyRefNum(Ref).getPAIdentifier());
-                   getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertPredessorIdstoPAIdentifiers : Converted the Ref "+Ref+"to "+this.Projectparent.getPAbyRefNum(Ref).getPAIdentifier() );
+                   getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertPredessorIdstoPAIdentifiers : Converted the Ref "+Ref+"to "+this.Projectparent.getPAbyRefNum(Ref).getPAIdentifier() );
    
             
         }
@@ -126,42 +126,42 @@ return Float.valueOf(DFormat.format(Result));
    }
      public void convertReworkerstoPAIdentifiers(){
    
-          getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertReworkerstoPAIdentifiers : ReworkProbability size is "+ReworkProbability.size() +" in "+this.getPAIdentifier() );
+          getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertReworkerstoPAIdentifiers : ReworkProbability size is "+ReworkProbability.size() +" in "+this.getPAIdentifier() );
                   Set<Map.Entry<String, Double>> set = ReworkProbability.entrySet();
                   
                 for (Map.Entry<String, Double> RW : set) {
                     String ref=RW.getKey();
                     Double val=RW.getValue();
                      getReworkProbabilityPAIdentifiers().put(this.Projectparent.getPAbyRefNum(ref).getPAIdentifier(), val);
-                   getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertReworkerstoPAIdentifiers : Converted the Ref "+ref+"to "+this.Projectparent.getPAbyRefNum(ref).getPAIdentifier() );
+                   getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertReworkerstoPAIdentifiers : Converted the Ref "+ref+"to "+this.Projectparent.getPAbyRefNum(ref).getPAIdentifier() );
                      
                 }
     ReworkProbability.clear();
    }
           public void convertProbabilityofbeingworkedinFeedbacktoPAIdentifiers(){
    
-          getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertProbabilityofbeingworkedinFeedbacktoPAIdentifiers : ReworkProbability size is "+ReworkProbability.size() +" in "+this.getPAIdentifier() );
+          getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertProbabilityofbeingworkedinFeedbacktoPAIdentifiers : ReworkProbability size is "+ReworkProbability.size() +" in "+this.getPAIdentifier() );
                   Set<Map.Entry<String, Double>> set = ProbabilityofbeingworkedinFeedback.entrySet();
                   
                 for (Map.Entry<String, Double> RW : set) {
                     String ref=RW.getKey();
                     Double val=RW.getValue();
                      ProbabilityofbeingworkedinFeedbackPAIdentifiers.put(this.Projectparent.getPAbyRefNum(ref).getPAIdentifier(), val);
-                   getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertProbabilityofbeingworkedinFeedbacktoPAIdentifiers : Converted the Ref "+ref+"to "+this.Projectparent.getPAbyRefNum(ref).getPAIdentifier() );
+                   getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertProbabilityofbeingworkedinFeedbacktoPAIdentifiers : Converted the Ref "+ref+"to "+this.Projectparent.getPAbyRefNum(ref).getPAIdentifier() );
                      
                 }
   ProbabilityofbeingworkedinFeedback.clear();
    }
   public void convertReworkProbabilitytoPAIdentifiers(){
    
-          getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertReworkProbabilitytoPAIdentifiers : ReworkImpact size is "+ReworkImpact.size() +" in "+this.getPAIdentifier() );
+          getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertReworkProbabilitytoPAIdentifiers : ReworkImpact size is "+ReworkImpact.size() +" in "+this.getPAIdentifier() );
                   Set<Map.Entry<String, Double>> set = ReworkImpact.entrySet();
                   
                 for (Map.Entry<String, Double> RW : set) {
                     String ref=RW.getKey();
                     Double val=RW.getValue();
                      getReworkImpactPAIdentifiers().put(this.Projectparent.getPAbyRefNum(ref).getPAIdentifier(), val);
-                   getLog().appendToLog(Logger.HAS_TO_SHOW,"ProjectActvity : convertReworkProbabilitytoPAIdentifiers : Converted the Ref "+ref+"to "+this.Projectparent.getPAbyRefNum(ref).getPAIdentifier() );
+                   getLog().appendToLog(Logger.INFORMATION,"ProjectActvity : convertReworkProbabilitytoPAIdentifiers : Converted the Ref "+ref+"to "+this.Projectparent.getPAbyRefNum(ref).getPAIdentifier() );
                      
                 }
   ReworkImpact.clear();

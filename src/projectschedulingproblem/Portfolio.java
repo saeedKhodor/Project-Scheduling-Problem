@@ -58,7 +58,7 @@ public final class Portfolio {
         if (!this.GlobalResources.isEmpty()) {
             for (Resource r : this.GlobalResources) {
 
-                Logger.appendToLog(Logger.IMPORTANT, r.toString());
+                Logger.appendToLog(Logger.HAS_TO_SHOW, r.toString());
             }
             return true;
         }
@@ -88,10 +88,10 @@ public final class Portfolio {
             PA.convertReworkProbabilitytoPAIdentifiers();
         }
         this.Projects.add(pr);
-        Logger.appendToLog(Logger.IMPORTANT, "Portfolio : loadProject : Project has been Created " + pr.toString());
+        Logger.appendToLog(Logger.HAS_TO_SHOW, "Portfolio : loadProject : Project has been Created " + pr.toString());
         int i = 1;
         for (Project p : this.Projects) {
-            Logger.appendToLog(Logger.IMPORTANT, "Portfolio : loadProject : Element " + i + " in ProjectArrayList " + pr.toString());
+            Logger.appendToLog(Logger.IMPORTANT, "Portfolio : loadProject : Element " + i + " in ProjectArrayList " + p.toString());
             i++;
         }
     }

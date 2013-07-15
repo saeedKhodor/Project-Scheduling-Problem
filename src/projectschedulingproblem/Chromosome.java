@@ -62,7 +62,7 @@ public class Chromosome {
             if (GeneticsMain.GeneticsFlipaCoin(Mutationfactor)) {
                 int Gopasize = this.GP.getGOPAPool().size();
                 GeneticOPA GoPA = this.GP.getGOPAPool().get(GeneticsMain.GeneticsGenerateNumberabovezero(Gopasize));
-                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:Mutate: Mutating GOPA " + Gopa.getOPAIdentifier(false) + " at i " + i + " with " + GoPA.getOPAIdentifier(false));
+                this.GenParent.getLog().appendToLog(Logger.HAS_TO_SHOW, "Chromosome:Mutate: Mutating GOPA " + Gopa.getOPAIdentifier(false) + " at i " + i + " with " + GoPA.getOPAIdentifier(false));
                 Elements.remove(i);
                 Elements.add(i, GoPA);
                 setHasbeenMutated(true);
@@ -170,7 +170,7 @@ public class Chromosome {
             }
             GOPA.ResetGOPA();
         }
-        ArrayList<GeneticOPA> WorkingPool = new ArrayList<GeneticOPA>();
+      
         ArrayList<GeneticOPA> FinishedPool = new ArrayList<GeneticOPA>();
         // will set all the activities that can start to start the project
         for (GeneticOPA GOPA : ExcutionPool) {
@@ -183,11 +183,11 @@ public class Chromosome {
         Double TimeConsumed = 0.0;
         int Ubnormal = 0;
 
-        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: HASSSSS STARTED");
+       // this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: HASSSSS STARTED");
         while (!AllhaveFinished) {
-            if (Ubnormal == 100000) {
+            if (Ubnormal == 100000000) {
                 AllhaveFinished = true;
-                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunforDuration:Ubnormal");
+                this.GenParent.getLog().appendToLog(Logger.HAS_TO_SHOW, "Chromosome:RunforDuration:Ubnormal");
                 MainForm.CSVier.WriteError("Chromosome:RunforDuration:Ubnormal Finishing for loop");
                 continue;
             }
@@ -276,7 +276,7 @@ public class Chromosome {
                         //release resources
                         OPR.ReleaseResourceOPA(GOPA);
                         if (!FinishedPool.contains(GOPA)) {
-                            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunforDuration:Adding  Gopa to finished pool " + GOPA.getOPAIdentifier(false));
+                          //  this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunforDuration:Adding  Gopa to finished pool " + GOPA.getOPAIdentifier(false));
                             FinishedPool.add(GOPA);
                         }
                         //finish the OPA
@@ -298,7 +298,7 @@ public class Chromosome {
                 if (GOPA.getStatus() != GeneticOPA.HASSTARTED && GOPA.getStatus() != GeneticOPA.HASFINISHED) {
 
                     if (arePredecessorsFinished(GOPA, ExcutionPool)) {
-                        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: GOPA : ExcutionPool can start =" + GOPA.getOPAIdentifier(false));
+                   //     this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: GOPA : ExcutionPool can start =" + GOPA.getOPAIdentifier(false));
 
                         GOPA.setStatus(GeneticOPA.CANSTART);
                     } else {
@@ -328,14 +328,14 @@ public class Chromosome {
             s += Gopa.getOPAIdentifier(false);
 
         }
-        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:GetDuration: Elements Elements are =" + s);
+        //this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:GetDuration: Elements Elements are =" + s);
 
         String s1 = "FinishedPool Elements are ";
         for (GeneticOPA Gopa : FinishedPool) {
             s1 += Gopa.getOPAIdentifier(false);
 
         }
-        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:GetDuration: FinishedPool Elements are =" + s1);
+        this.GenParent.getLog().appendToLog(Logger.HAS_TO_SHOW, "Chromosome:GetDuration: FinishedPool Elements are =" + s1);
 
         return TimeConsumed;
     }
@@ -359,17 +359,17 @@ public class Chromosome {
         ArrayList<GeneticOPA> Temporary = new ArrayList<GeneticOPA>();
         Temporary.addAll(Elements);
         
-        this.GenParent.getLog().appendToLog(Logger.INFORMATION, " Chromosome ApplyFeasibility for Chr " + this.toString());
+        //this.GenParent.getLog().appendToLog(Logger.INFORMATION, " Chromosome ApplyFeasibility for Chr " + this.toString());
         ArrayList<GeneticOPA> GOPAppool = this.GP.getGOPAPool();
 
-//           this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have ");
+//           //this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have ");
         //  while(checkFeasibility()!=-1){
         int TemporaryDifference = GOPAppool.size() - Temporary.size();
         for (int i = 0; i < GOPAppool.size(); i++) {
 
 
             GeneticOPA Gopa = GOPAppool.get(i);
-            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: checking for  Ordinary GOPA " + Gopa.getOPAIdentifier(false));
+           // this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: checking for  Ordinary GOPA " + Gopa.getOPAIdentifier(false));
             int Occurences = Collections.frequency(Temporary, Gopa);
 
             if (Occurences == 0 && !Gopa.isfeedback()) {
@@ -378,7 +378,7 @@ public class Chromosome {
                 Temporary.add(Gopa);
                 OrdinaryAlterationValues++;
 
-                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have a zero Occurence for OPA " + Gopa.getOPAIdentifier(false) + "Ordinary Alternative Value" + OrdinaryAlterationValues + "Feedback Alternative Value" + FeedbackAlterationValues + " Elementssize " + Elements.size() + " Temp size " + Temporary.size());
+              //  this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have a zero Occurence for OPA " + Gopa.getOPAIdentifier(false) + "Ordinary Alternative Value" + OrdinaryAlterationValues + "Feedback Alternative Value" + FeedbackAlterationValues + " Elementssize " + Elements.size() + " Temp size " + Temporary.size());
 
             } else if (Occurences > 1) {
                 int OC = Occurences - 1;
@@ -391,15 +391,15 @@ public class Chromosome {
                 } else {
                     FeedbackAlterationValues -= OC;
                 }
-                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have " + Occurences + " prev Occurences for OPA " + Gopa.getOPAIdentifier(false) + " no changed to " + Collections.frequency(Temporary, Gopa));
+        //        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have " + Occurences + " prev Occurences for OPA " + Gopa.getOPAIdentifier(false) + " no changed to " + Collections.frequency(Temporary, Gopa));
 
             } else {
-                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have " + Occurences + " Occurences for OPA " + Gopa.getOPAIdentifier(false));
+         //       this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have " + Occurences + " Occurences for OPA " + Gopa.getOPAIdentifier(false));
 
             }
         }
 
-        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have done the follwoing alterations " + "Ordinary Alternative Value" + OrdinaryAlterationValues + "Feedback Alternative Value" + FeedbackAlterationValues);
+    //    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: we have done the follwoing alterations " + "Ordinary Alternative Value" + OrdinaryAlterationValues + "Feedback Alternative Value" + FeedbackAlterationValues);
 
         // at this Point there are no duplicates or missing ordinary OPas
         // next we need to Check  what Feedbacks  dont have there predecessor found  we will use the FCID and the Name to make sure 
@@ -435,7 +435,7 @@ public class Chromosome {
                             if (Temporary.remove(MainGopa)) {
                                 Feedbacks.remove(i);
                                 FeedbackAlterationValues--;
-                                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: Removing Feedback since not all pred " + Pred + "are found for OPA " + MainGopa.getOPAIdentifier(false) + GFCID + "OAV" + OrdinaryAlterationValues + "FAV" + FeedbackAlterationValues);
+                              //  this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: Removing Feedback since not all pred " + Pred + "are found for OPA " + MainGopa.getOPAIdentifier(false) + GFCID + "OAV" + OrdinaryAlterationValues + "FAV" + FeedbackAlterationValues);
                                 canremove = true;
                             }
                         }
@@ -498,7 +498,7 @@ public class Chromosome {
                             Temporary.add(Gopa);
 
                             neededextraalteration++;
-                            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: adding  Feedback " + Gopa.getOPAIdentifier(false) + Gopa.getFCID() + " stillneededalteration" + neededextraalteration);
+                       //     this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: adding  Feedback " + Gopa.getOPAIdentifier(false) + Gopa.getFCID() + " stillneededalteration" + neededextraalteration);
 
                         }
                         passedaloopanddidntdoalteration = false;
@@ -509,7 +509,7 @@ public class Chromosome {
 
                 }
                 if (passedaloopanddidntdoalteration) {
-                    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: quitting loop passed aloop and didnt do alteration, neededextraalteration " + neededextraalteration);
+                 //   this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:ChromosomeApplyFeasibility: quitting loop passed aloop and didnt do alteration, neededextraalteration " + neededextraalteration);
 
                 }
 
@@ -526,7 +526,7 @@ public class Chromosome {
         int originalTempsize = Temporary.size();
         while (!canexit) {
             if (Ubnormal == 1000000) {
-
+  this.GenParent.getLog().appendToLog(Logger.HAS_TO_SHOW, "Chromosome:RunLMandNotRandom:Ubnormal canexit loop");
                 MainForm.CSVier.WriteError("TimeStepper:Start:Ubnormal Finishing for loop ");
                 break;
             }
@@ -909,16 +909,16 @@ public class Chromosome {
         boolean AllhaveFinished = false;
         int Ubnormal = 0;
         while (!AllhaveFinished) {
-            if (Ubnormal == 100000) {
+            if (Ubnormal == 100000000) {
                 AllhaveFinished = true;
-                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom:Ubnormal");
+                this.GenParent.getLog().appendToLog(Logger.HAS_TO_SHOW, "Chromosome:RunLMandNotRandom:Ubnormal");
                 MainForm.CSVier.WriteError("Chromosome:RunLMandNotRandom:Ubnormal Finishing for loop");
                 continue;
             }
 
             for (GeneticOPA GOPA : ExcutionPool) {
                 if (GOPA.getStatus() == GeneticOPA.CANSTART) {
-                    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom: setting GOPA " + GOPA.getOPAIdentifier(false) + " to HasStarted");
+                   // this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom: setting GOPA " + GOPA.getOPAIdentifier(false) + " to HasStarted");
 
                     GOPA.setStatus(GeneticOPA.HASSTARTED);
                 }
@@ -942,7 +942,7 @@ public class Chromosome {
             //FinishedPool.add(GOPA);
             for (GeneticOPA GOPA : ExcutionPool) {
                 if (GOPA.getStatus() != GeneticOPA.HASSTARTED && GOPA.getStatus() != GeneticOPA.HASFINISHED) {
-                    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom: GOPA : ExcutionPool =" + GOPA.getOPAIdentifier(false));
+                  //  this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom: GOPA : ExcutionPool =" + GOPA.getOPAIdentifier(false));
 
                     if (arePredecessorsFinished(GOPA, ExcutionPool)) {
 
@@ -970,7 +970,7 @@ public class Chromosome {
             s += Gopa.getOPAIdentifier(false);
 
         }
-        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:RunLMandNotRandom: FinishedPool Elements are =" + s);
+        this.GenParent.getLog().appendToLog(Logger.HAS_TO_SHOW, "Chromosome:RunLMandNotRandom: FinishedPool Elements are =" + s);
 
     }
 
@@ -1094,14 +1094,14 @@ public class Chromosome {
         if (!checkFeasibility(Elements, getCountofOrdinaryGOpasinList(Elements))) {
             this.Duration = Double.POSITIVE_INFINITY;
             this.Fitness = Double.valueOf(DFormat.format(1 / Duration));
-            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: the Gopa returning Positive Infinity  " + getFitness());
+           // this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: the Gopa returning Positive Infinity  " + getFitness());
             return;
         }
 //        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: they are feasable  ");
 //        // todo insert the running for the project with Resources
         this.Duration = RunforDuration();
         this.Fitness = Double.valueOf(DFormat.format(1 / Duration));
-        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: the Gopa returning Duration of  " + Duration);
+    //    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:getDuration: the Gopa returning Duration of  " + Duration);
 
     }
 
@@ -1177,7 +1177,7 @@ public class Chromosome {
                         String GFCID = Fgopa.getFCID();
                         if (Fpreds.contains(Fgopaname) && FCids.contains(GFCID)) {
                             if (AL.indexOf(Fgopa) > index) {
-                                this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:isStartsafterfeedbackCycle returniing False ");
+                            //    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:isStartsafterfeedbackCycle returniing False ");
                                 return false;
                             }
                         }
@@ -1192,7 +1192,7 @@ public class Chromosome {
                     String EGOPAName = EGOPA.getOPAIdentifier(false);
                     int PreIndex = AL.indexOf(EGOPAName);
                     if (Gpred.contains(EGOPAName) && PreIndex > index) {
-                        this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:isFeddbackStarterOPA returniing False ");
+                    //    this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:isFeddbackStarterOPA returniing False ");
 
                         return false;
 
@@ -1208,7 +1208,7 @@ public class Chromosome {
                     int Preindex = AL.indexOf(EGOPA);
                     if (Gpred.contains(EGOPAName) && EGFCID.equalsIgnoreCase(GFCID)) {
                         if (Preindex > index) {
-                            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:isfeedback returniing False ");
+                         //   this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:isfeedback returniing False ");
 
                             return false;
                         }
@@ -1223,7 +1223,7 @@ public class Chromosome {
                     int Preindex = AL.indexOf(EGOPA);
                     if (Gpred.contains(EGOPAName)) {
                         if (Preindex > index) {
-                            this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:Ordinary returniing False ");
+                       //     this.GenParent.getLog().appendToLog(Logger.INFORMATION, "Chromosome:checkFeasibility:Ordinary returniing False ");
 
                             return false;
                         }

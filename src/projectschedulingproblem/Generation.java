@@ -126,7 +126,7 @@ public class Generation {
         String S = "";//ID,Chromosome ,Duration,Fitness,ProjectRunningStats,Mutated" + '\n';
         for (Chromosome CHR : Chromosomes) {
 
-            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.getCHES().toString() + "," + CHR.isHasbeenMutated() + "\n";
+            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "\n";
 
         }
 
@@ -139,7 +139,7 @@ public class Generation {
 
         Chromosome CHR = getHighestDurationChr();
         if (CHR != null) {
-            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.getCHES().toString() + "," + CHR.isHasbeenMutated() + "\n";
+            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "\n";
 
         } else {
             S += this.GP.getGPID() + "," + this.getGenerationID() + "There is no fit chromosome to display ";

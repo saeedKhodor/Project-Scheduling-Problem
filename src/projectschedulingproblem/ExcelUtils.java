@@ -363,7 +363,7 @@ public ArrayList<ProjectActivity> getProjectActivitiesFromExcel( Sheet sh,Projec
       }
 //PA.setProjectparent(P);
        PAs.add(PA);
-        getLog().appendToLog(Logger.HAS_TO_SHOW,"ExcelUtils: getProjectActivitiesFromExcel : Project Activity has been Added " + PA.toString() );
+        getLog().appendToLog(Logger.IMPORTANT,"ExcelUtils: getProjectActivitiesFromExcel : Project Activity has been Added " + PA.toString() );
      }
     
     return PAs;

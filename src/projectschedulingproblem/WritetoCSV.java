@@ -42,10 +42,11 @@ public class WritetoCSV {
                 }
             }
             writeGeneticstoCSV(null, true);
-            WriteFinalResultsExcel(null,true);
+          //  WriteFinalResultsExcel(null,true);
             WriteFinalExcution(null,true);
 
         } catch (Exception e) {
+            
         }
 
     }
@@ -58,7 +59,7 @@ public class WritetoCSV {
             
             writer = new FileWriter(this.CurrentDirectory + "\\" + "Generations" + ".csv",true);
             if(justHeaders){
-                  writer.append("ProjectID,GenID,Chromosome ,Duration,Fitness,ProjectRunningStats,Mutated" + '\n');
+                  writer.append("ProjectID,GenID,Chromosome,Duration,Fitness,Mutated,ProjectRunningStats" + '\n');
             }else{
               writer.append(Gen.GenerateCSVStringforgenerationcsv());  
             }
@@ -139,7 +140,7 @@ public class WritetoCSV {
 //            writer.append("Project Name=" + Fname);
 //            writer.append('\n');
             if(justHeaders){
-                  writer.append("ProjectID,GenID,Chromosome ,Duration,Fitness,ProjectRunningStats,Mutated" + '\n');
+                  writer.append("ProjectID,GenID,Chromosome,Duration,Fitness,Mutated,ProjectRunningStats" + '\n');
             }else{
               writer.append(gen.GenerateCSVStringForFinalResultCSV());  
             }
