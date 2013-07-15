@@ -121,7 +121,7 @@ public class MainForm extends javax.swing.JFrame {
         Genetics_CB = new javax.swing.JComboBox();
         TWOPOINT_CHB = new javax.swing.JCheckBox();
         ByPassFittest = new javax.swing.JCheckBox();
-        Tournamentselection_B = new javax.swing.JCheckBox();
+        Tournamentselection_CB = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         PrepareforGeneticsB = new javax.swing.JButton();
         PreperationMethod = new javax.swing.JComboBox();
@@ -543,7 +543,7 @@ public class MainForm extends javax.swing.JFrame {
 
         ByPassFittest.setText("Bypass Fittest");
 
-        Tournamentselection_B.setText("Tournament selection");
+        Tournamentselection_CB.setText("Tournament selection");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -573,7 +573,7 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(Genetics_CB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(ApplyGenetics_B))
-                    .addComponent(Tournamentselection_B))
+                    .addComponent(Tournamentselection_CB))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -610,7 +610,7 @@ public class MainForm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(ByPassFittest, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Tournamentselection_B, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Tournamentselection_CB, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46))))
         );
 
@@ -1117,6 +1117,7 @@ this.ApplyGenetics_B.setEnabled(true);
             float NumberofGenerations = (float) Double.parseDouble(this.NumberofGenerationsTF.getText());
             boolean FeasilbiltyON = this.Feasibility_CHB.isSelected();
             boolean byPassFittest = this.ByPassFittest.isSelected();
+            boolean tournamentstyle=this.Tournamentselection_CB.isSelected();
             if (NumberofGenerations > 10 || Populationsize > 20) {
                 JOptionPane.showMessageDialog(this, " the value is large for the Heap space of the TextArea at the current Verbose level ");
                 DeactivateTA = true;
@@ -1137,7 +1138,7 @@ this.ApplyGenetics_B.setEnabled(true);
             } else {
                 CrossoverMode = GeneticsMain.ONEPOINTCROSSOVERMODE;
             }
-            GeneticsVariablesCapsule GVC = new GeneticsVariablesCapsule(CrossOverFactor, MutationFactor, Populationsize, NumberofGenerations, FeasilbiltyON, CrossoverMode, FirstGenChoosingMode, byPassFittest);
+            GeneticsVariablesCapsule GVC = new GeneticsVariablesCapsule(CrossOverFactor, MutationFactor, Populationsize, NumberofGenerations, FeasilbiltyON, CrossoverMode, FirstGenChoosingMode, byPassFittest,tournamentstyle);
 
             this.GM.ProcessGps(GVC);
 
@@ -1395,7 +1396,7 @@ this.ApplyGenetics_B.setEnabled(true);
     private javax.swing.JTextField ReworkStartCellTF;
     private javax.swing.JButton SetDefaultvalues;
     private javax.swing.JCheckBox TWOPOINT_CHB;
-    private javax.swing.JCheckBox Tournamentselection_B;
+    private javax.swing.JCheckBox Tournamentselection_CB;
     private javax.swing.JLabel Usedmemory_LB;
     private javax.swing.JMenu Verbose;
     private javax.swing.JMenuItem Verbose1;

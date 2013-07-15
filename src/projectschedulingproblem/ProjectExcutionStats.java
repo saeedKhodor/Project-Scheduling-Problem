@@ -4,6 +4,8 @@
  */
 package projectschedulingproblem;
 
+import java.text.DecimalFormat;
+
 /**
  *
  * @author saeed
@@ -90,6 +92,13 @@ public ProjectExcutionStats() {
         
         return ProjectEndTime-ProjectStartTime;
         
+    }
+    public String getDelay(){
+        
+        float Delay=getDuration()-ParentOP.getCPCapsule().getTotalDuration();
+         DecimalFormat DFormat = new DecimalFormat(MainForm.PrecFormat);
+        return Float.valueOf(DFormat.format(Delay)).toString();
+         
     }
     @Override
     public String toString(){

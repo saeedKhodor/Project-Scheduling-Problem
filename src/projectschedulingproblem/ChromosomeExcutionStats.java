@@ -78,6 +78,17 @@ public class ChromosomeExcutionStats {
         }
         return null;
     }
+    public String getOPPNamescommadelimeted(){
+        String s="";
+        for(int i=0;i<OppsAdded.size();i++){
+            s+=OppsAdded.get(i).getProjectName()+",";
+            
+        }
+        if(OppsAdded.isEmpty()){
+            return "Nothing";
+        }
+        return s;
+    }
     public void checkGOPA(GeneticOPA Gopa,float TimeConsumed){
         OperationProject OPP=Gopa.getOperationProjectParentofGOPA();
         ProjectExcutionStats PES=getPESbyOPP(OPP);
@@ -108,7 +119,24 @@ public class ChromosomeExcutionStats {
         
         
     }
+ public String getDelayDtring(String Projectnames) {
+           if(ProejctsStats.isEmpty()){
+            return "NA";
+        }
+        String S="";
+     String[]explode=Projectnames.split(",");
+      for (int i = 0; i < explode.length; i++) {
 
+         for (ProjectExcutionStats PES : this.ProejctsStats) {
+             if(PES.ParentOP.getProjectName().equals(explode[i])){
+                 S += PES.getDelay() + ",";
+             }
+             
+
+         }
+     }
+        return S;
+    }
     @Override
     public String toString() {
            if(ProejctsStats.isEmpty()){
@@ -118,7 +146,7 @@ public class ChromosomeExcutionStats {
      
             
         for(ProjectExcutionStats PES:this.ProejctsStats){
-            S+=PES.toString()+ "\t";
+            S+=PES.toString()+ "||";
             
         }
         return S;

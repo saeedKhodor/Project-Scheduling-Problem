@@ -146,7 +146,8 @@ public ArrayList<Resource> getResoucesFromExcel(Portfolio prtfolio,String Sheetn
       
 }
 public Project getProjectFromExcel(Project Pr,ProjectCapsule PC,boolean SkipTitle){// need to add thedsm cell reference , and the reqork impact
-   Project pr=Pr;
+   
+    Project pr=Pr;
     Workbook wb=this.getWb(this.filename);
      try{
     getLog().appendToLog(Logger.INFORMATION,"ExcelUtils: getProjectFromExcel : function has started...");

@@ -5,6 +5,9 @@
 package projectschedulingproblem;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -19,6 +22,7 @@ public class Generation {
     private Logger Log;
     private int GenerationID = 0;
     private GeneticsMain GMParent;
+    private String ProjectSortingForCSV = "";
 
     public Generation(GeneticsVariablesCapsule gvc, Logger Log) {
         this.Chromosomes = new ArrayList<Chromosome>();
@@ -126,11 +130,23 @@ public class Generation {
         String S = "";//ID,Chromosome ,Duration,Fitness,ProjectRunningStats,Mutated" + '\n';
         for (Chromosome CHR : Chromosomes) {
 
-            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "\n";
+            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "," + CHR.getCHES().getDelayDtring(this.ProjectSortingForCSV) + "\n";
 
         }
 
         return S;
+
+    }
+
+    public String GetProjectNamesCommadelimited() {
+        String s = "";
+        if (!Chromosomes.isEmpty()) {
+            Chromosome CHR = Chromosomes.get(0);
+            s = CHR.getCHES().getOPPNamescommadelimeted();
+        } else {
+            return "Nothing";
+        }
+        return s;
 
     }
 
@@ -139,7 +155,7 @@ public class Generation {
 
         Chromosome CHR = getHighestDurationChr();
         if (CHR != null) {
-            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "\n";
+            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "," + CHR.getCHES().getDelayDtring(this.ProjectSortingForCSV) + "\n";
 
         } else {
             S += this.GP.getGPID() + "," + this.getGenerationID() + "There is no fit chromosome to display ";
@@ -164,9 +180,9 @@ public class Generation {
             }
 
         }
-if(index==-1){
-   return null;
-}
+        if (index == -1) {
+            return null;
+        }
         return Chromosomes.get(index);
     }
 
@@ -250,8 +266,16 @@ if(index==-1){
 
 
         }
-
+        int ubnormal = 0;
+        boolean ubnormlinnerloop = false;
         while (nextGen.getChromosomes().size() < this.poulationsize) {
+            if (ubnormal > 100000 || ubnormlinnerloop) {
+
+                MainForm.CSVier.WriteError("Generation: crossover: Loop error ubnormal");
+                break;
+
+
+            }
             Integer Chr1index = -1;
             Chromosome CHr1 = null;
             Chromosome CHr2 = null;
@@ -262,45 +286,67 @@ if(index==-1){
                 Log.appendToLog(Logger.INFORMATION, "generation:CrossOVer : Reached population size-1 setting Status =1  " + Chr1index);
                 Chrsneeded = 1;
             }
+            int ubnormal1 = 0;
             while (ChrFound < Chrsneeded) {
-                float RandomNumber = GeneticsMain.GeneticsGenerateNumberPercentage();
+                if (ubnormal > 100000) {
 
-                for (int i = 0; i < Chromosomes.size(); i++) {
-                    if (ChrFound == 1 && Chr1index == i) {
-                        Log.appendToLog(Logger.INFORMATION, "generation:CrossOVer : skipping Status =2 and Chr1index is  " + Chr1index);
-                        continue;
-                    }
-                    float genProb = Chromosomes.get(i).getGenProbability().floatValue();
-                    int chosen;
+                    MainForm.CSVier.WriteError("Generation: crossover: Loop error ubnormal");
+                    ubnormlinnerloop = true;
+                    break;
 
-                    if (genProb <= RandomNumber) {
-                        if (foundthatallFitnessareequal) {
-                            if (Chromosomes.size() <= 0) {
-                                chosen = i;
-                            } else {
-                                chosen = i + GeneticsMain.GeneticsGenerateNumberabovezero((Chromosomes.size() - 1) - i);
-                            }
-                        } else {
-                            chosen = i;
-                        }
-                        if (ChrFound == 1) {
-
-                            CHr2 = Chromosomes.get(chosen);
-                            ChrFound += 1;
-                            break;
-                        }
-
-                        if (ChrFound == 0) {
-                            Chr1index = chosen;
-                            CHr1 = Chromosomes.get(chosen);
-                            ChrFound += 1;
-                            break;
-                        }
-
-
-                    }
 
                 }
+                if (!GVC.isTournament()) {
+
+
+                    float RandomNumber = GeneticsMain.GeneticsGenerateNumberPercentage();
+
+                    for (int i = 0; i < Chromosomes.size(); i++) {
+                        if (ChrFound == 1 && Chr1index == i) {
+                            Log.appendToLog(Logger.INFORMATION, "generation:CrossOVer : skipping Status =2 and Chr1index is  " + Chr1index);
+                            continue;
+                        }
+                        float genProb = Chromosomes.get(i).getGenProbability().floatValue();
+                        int chosen;
+
+                        if (genProb <= RandomNumber) {
+                            if (foundthatallFitnessareequal) {
+                                if (Chromosomes.size() <= 0) {
+                                    chosen = i;
+                                } else {
+                                    chosen = i + GeneticsMain.GeneticsGenerateNumberabovezero((Chromosomes.size() - 1) - i);
+                                }
+                            } else {
+                                chosen = i;
+                            }
+                            if (ChrFound == 1) {
+
+                                CHr2 = Chromosomes.get(chosen);
+                                ChrFound += 1;
+                                break;
+                            }
+
+                            if (ChrFound == 0) {
+                                Chr1index = chosen;
+                                CHr1 = Chromosomes.get(chosen);
+                                ChrFound += 1;
+                                break;
+                            }
+
+
+                        }
+
+                    }
+                } else {
+// here is the tournament style
+                            CHr2 = getCHRbyTOurnament();
+                            CHr1 = getCHRbyTOurnament();
+                            ChrFound += 2;
+                            break;
+
+                    // }
+                }
+                ubnormal1++;
             }
             if (Chrsneeded == 2) {
 
@@ -321,10 +367,41 @@ if(index==-1){
 
             }
 
-
+            ubnormal++;
         }
 
         return nextGen;
+    }
+
+    public Chromosome getCHRbyTOurnament() {
+        ArrayList<Integer> Randomnumbers = new ArrayList<Integer>(3);
+
+        // generate the 3 random numbers without duplicates
+        Random rng = new Random(); // Ideally just create one instance globally
+        // Note: use LinkedHashSet to maintain insertion order
+
+        while (Randomnumbers.size() < 3) {
+            Integer next = rng.nextInt(Chromosomes.size());
+            // As we're adding to a set, this will automatically do a containment check
+            if (!Randomnumbers.contains(next)) {
+                Randomnumbers.add(next);
+            }
+
+        }
+
+        //for (int i = 0; i < Chromosomes.size(); i++) {
+        float max = Float.MIN_VALUE;
+        int index = -1;
+        for (Integer I : Randomnumbers) {
+            float Fit = Chromosomes.get(I).getFitness().floatValue();
+            if (Fit > max) {
+                max=Fit;
+                index = I;
+            }
+
+        }
+
+        return Chromosomes.get(index);
     }
 
     private Chromosome getbestFittnessCHR() {
@@ -573,5 +650,19 @@ if(index==-1){
      */
     public void setGMParent(GeneticsMain GMParent) {
         this.GMParent = GMParent;
+    }
+
+    /**
+     * @return the ProjectSortingForCSV
+     */
+    public String getProjectSortingForCSV() {
+        return ProjectSortingForCSV;
+    }
+
+    /**
+     * @param ProjectSortingForCSV the ProjectSortingForCSV to set
+     */
+    public void setProjectSortingForCSV(String ProjectSortingForCSV) {
+        this.ProjectSortingForCSV = ProjectSortingForCSV;
     }
 }

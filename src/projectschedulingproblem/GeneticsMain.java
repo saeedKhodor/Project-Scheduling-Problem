@@ -92,7 +92,7 @@ public class GeneticsMain {
                 IDs.add("GPID-" + number);
                 GPs.add(GP);
                 this.Log.appendToLog(Logger.INFORMATION, "GeneticsMain : CreateLMPools :Grouping Mode Ts sizes are " + GP.toString() + " number of Gps is " + GPs.size());
-// need to change it and choose 
+
             } else {
 
                 GeneticPool GP = new GeneticPool(Ts.GetAllOPAforGeneticpool().size(), this.Log);
@@ -250,17 +250,34 @@ public Generation getHighetRankGenerationbyID(String ID){
 
 
         // }
-
+//MainForm.CSVier.writeGeneticstoCSV(null,false,"");
+          boolean Firsttime1=true;
+          String ProjectNames1="";
         for (Generation Gen : Generations) {
-            MainForm.CSVier.writeGeneticstoCSV(Gen,false);
+            if(Firsttime1){
+                ProjectNames1=Gen.GetProjectNamesCommadelimited();
+                MainForm.CSVier.writeGeneticstoCSV(Gen,false,ProjectNames1);
+                
+                Firsttime1=false;
+            }
+            Gen.setProjectSortingForCSV(ProjectNames1);
+            MainForm.CSVier.writeGeneticstoCSV(Gen,false,"Nothing");
             
         }
-        MainForm.CSVier. WriteFinalResultsExcel(null,true);
+        
+        //MainForm.CSVier. WriteFinalResultsExcel(null,true);
+        boolean Firsttime=true;
+        String ProjectNames="";
         for(String ID:IDs){
-         Generation gen=this.getHighetRankGenerationbyID(ID);
-         
-         MainForm.CSVier. WriteFinalResultsExcel(gen,false);
-            
+            Generation gen=this.getHighetRankGenerationbyID(ID);
+            if(Firsttime){
+                ProjectNames=gen.GetProjectNamesCommadelimited();
+                  MainForm.CSVier. WriteFinalResultsExcel(gen,false,ProjectNames);
+                  Firsttime=false;
+            }
+                gen.setProjectSortingForCSV(ProjectNames);
+                MainForm.CSVier. WriteFinalResultsExcel(gen,false,"Nothing");
+           
         }
        
         this.Log.appendToLog(Logger.INFORMATION, "GeneticsMain : ProcessGps : GVC tostring " + GVC.toString());

@@ -764,7 +764,7 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="ApplyGenetics_B" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="Tournamentselection_B" min="-2" max="-2" attributes="0"/>
+                      <Component id="Tournamentselection_CB" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -813,7 +813,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="ByPassFittest" min="-2" pref="18" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="Tournamentselection_B" min="-2" pref="18" max="-2" attributes="0"/>
+                          <Component id="Tournamentselection_CB" min="-2" pref="18" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -915,7 +915,7 @@
             <Property name="text" type="java.lang.String" value="Bypass Fittest"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="Tournamentselection_B">
+        <Component class="javax.swing.JCheckBox" name="Tournamentselection_CB">
           <Properties>
             <Property name="text" type="java.lang.String" value="Tournament selection"/>
           </Properties>

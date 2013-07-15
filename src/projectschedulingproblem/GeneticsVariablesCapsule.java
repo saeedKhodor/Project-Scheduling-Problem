@@ -18,8 +18,9 @@ public class GeneticsVariablesCapsule {
         private int FirstGenChoosingMode;
         private int MethodMode;
         private boolean bypassfittest;
+        private boolean tournament;
         
-    public GeneticsVariablesCapsule(float CrossOverFactor,float MutationFactor,float Populationsize,float NumberofGenerations,boolean FeasilbiltyON,int CrossoverMode,int FirstGenChoosingMode,boolean bypassfittest){
+    public GeneticsVariablesCapsule(float CrossOverFactor,float MutationFactor,float Populationsize,float NumberofGenerations,boolean FeasilbiltyON,int CrossoverMode,int FirstGenChoosingMode,boolean bypassfittest,boolean tournamentstyle){
         
         this.CrossOverFactor=CrossOverFactor;
         this.MutationFactor=MutationFactor;
@@ -29,10 +30,11 @@ public class GeneticsVariablesCapsule {
         this.CrossoverMode=CrossoverMode;
         this.FirstGenChoosingMode=FirstGenChoosingMode;
         this.bypassfittest=bypassfittest;
+        this.tournament=tournamentstyle;
     }
     @Override
     public String toString(){
-        return "COF="+this.CrossOverFactor+" MUT "+MutationFactor+" Populationsize  "+Populationsize+ " #of Generations "+NumberofGenerations+ " Feasibility " + FeasilbiltyON +" CrossoverMode "+CrossoverMode+"BypassFittest "+bypassfittest;
+        return "COF="+this.CrossOverFactor+" MUT "+MutationFactor+" Populationsize  "+Populationsize+ " #of Generations "+NumberofGenerations+ " Feasibility " + FeasilbiltyON +" CrossoverMode "+CrossoverMode+"BypassFittest "+bypassfittest+" tournamentstyle "+tournament;
 
 }
     /**
@@ -159,5 +161,19 @@ public class GeneticsVariablesCapsule {
      */
     public void setBypassfittest(boolean bypassfittest) {
         this.bypassfittest = bypassfittest;
+    }
+
+    /**
+     * @return the tournament
+     */
+    public boolean isTournament() {
+        return tournament;
+    }
+
+    /**
+     * @param tournament the tournament to set
+     */
+    public void setTournament(boolean tournament) {
+        this.tournament = tournament;
     }
 }
