@@ -64,7 +64,7 @@ public class CPathOPA {
         float SlackForward=LatestPossibleStartforActivity-earliestPossibleStartforActivity;
         float SlackBackwards=LatestPossibleFinishforActivity-earliestPossibleFinishforActivity;
         
-                if(SlackForward==0.0 ||SlackBackwards==0.0){
+                if(SlackForward==0.0f ||SlackBackwards==0.0f){
                           return true;  
                 }
     return false;

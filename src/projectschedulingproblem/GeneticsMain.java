@@ -165,7 +165,14 @@ public class GeneticsMain {
 
         return (float) R / 100;
     }
+ public static float GeneticsGenerateNumberbetweenvalues(float lbound , float ubound) {
 
+
+        Random r = new Random();
+        float R = r.nextFloat()*(ubound-lbound) + lbound;
+        
+        return R;
+    }
     public static int GeneticsGenerateNumberabovezero(int Number) {
 
 

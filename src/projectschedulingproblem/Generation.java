@@ -185,7 +185,20 @@ public class Generation {
         }
         return Chromosomes.get(index);
     }
+public float getHighestFittnessChrfloat() {
+        float lowestDuration = Float.MAX_VALUE;
+        for (int i = 0; i < Chromosomes.size(); i++) {
+            float dur=(float)Chromosomes.get(i).getDuration();
+            
+            if (dur < lowestDuration) {
+                lowestDuration = (float)dur;
 
+            }
+
+        }
+        
+        return 1/lowestDuration;
+    }
     public void ApplyFeasibility() {
         for (Chromosome CHR : Chromosomes) {
 
@@ -299,17 +312,19 @@ public class Generation {
                 if (!GVC.isTournament()) {
 
 
-                    float RandomNumber = GeneticsMain.GeneticsGenerateNumberPercentage();
+                    //float RandomNumber = GeneticsMain.GeneticsGenerateNumberPercentage();
+                    float RandomNumber = GeneticsMain.GeneticsGenerateNumberbetweenvalues(0.0f, (getHighestFittnessChrfloat()+0.1f));
 
                     for (int i = 0; i < Chromosomes.size(); i++) {
                         if (ChrFound == 1 && Chr1index == i) {
                             Log.appendToLog(Logger.INFORMATION, "generation:CrossOVer : skipping Status =2 and Chr1index is  " + Chr1index);
                             continue;
                         }
-                        float genProb = Chromosomes.get(i).getGenProbability().floatValue();
+                        //float genProb = Chromosomes.get(i).getGenProbability().floatValue();
+                       float genProb = Chromosomes.get(i).getFitness().floatValue();
                         int chosen;
 
-                        if (genProb <= RandomNumber) {
+                        if (genProb >= RandomNumber) {
                             if (foundthatallFitnessareequal) {
                                 if (Chromosomes.size() <= 0) {
                                     chosen = i;

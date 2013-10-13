@@ -2,15 +2,10 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="8">
         <file>
-            <url>src/projectschedulingproblem/Chromosome.java</url>
-            <bookmark id="5">
+            <url>src/projectschedulingproblem/OperationProjectActivity.java</url>
+            <bookmark id="7">
                 <name/>
-                <line>548</line>
-                <key/>
-            </bookmark>
-            <bookmark id="6">
-                <name/>
-                <line>559</line>
+                <line>182</line>
                 <key/>
             </bookmark>
         </file>
@@ -23,10 +18,15 @@
             </bookmark>
         </file>
         <file>
-            <url>src/projectschedulingproblem/OperationProjectActivity.java</url>
-            <bookmark id="7">
+            <url>src/projectschedulingproblem/Chromosome.java</url>
+            <bookmark id="5">
                 <name/>
-                <line>182</line>
+                <line>548</line>
+                <key/>
+            </bookmark>
+            <bookmark id="6">
+                <name/>
+                <line>559</line>
                 <key/>
             </bookmark>
         </file>

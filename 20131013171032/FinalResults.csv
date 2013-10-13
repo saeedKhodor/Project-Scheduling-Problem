@@ -1,0 +1,2 @@
+ProjectID,GenID,Chromosome,Duration,Fitness,Mutated,ProjectRunningStats,A,
+GPID-1,100,A1.0;A5.0;A6.0;A2.0;A7.0;A3.0;A8.0;A4.0;A9.0;A10.0;,35.64596,0.02805,false,Chromosome ExcutionStats Pname A ST 0.0 ET 35.64596 Duration 35.64596 Criticalpath Dur= 22.99808||,12.64788,
