@@ -10,14 +10,6 @@
             </bookmark>
         </file>
         <file>
-            <url>src/projectschedulingproblem/MainForm.java</url>
-            <bookmark id="1">
-                <name/>
-                <line>797</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/projectschedulingproblem/Chromosome.java</url>
             <bookmark id="5">
                 <name/>
@@ -31,10 +23,18 @@
             </bookmark>
         </file>
         <file>
+            <url>src/projectschedulingproblem/MainForm.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>804</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>src/projectschedulingproblem/GeneticsMain.java</url>
             <bookmark id="8">
                 <name/>
-                <line>216</line>
+                <line>223</line>
                 <key/>
             </bookmark>
         </file>

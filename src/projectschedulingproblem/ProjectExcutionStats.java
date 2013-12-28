@@ -96,6 +96,9 @@ public ProjectExcutionStats() {
     public String getDelay(){
         
         float Delay=getDuration()-ParentOP.getCPCapsule().getTotalDuration();
+        if( Delay<0){
+            Delay=0.0f;
+        }
          DecimalFormat DFormat = new DecimalFormat(MainForm.PrecFormat);
         return Float.valueOf(DFormat.format(Delay)).toString();
          

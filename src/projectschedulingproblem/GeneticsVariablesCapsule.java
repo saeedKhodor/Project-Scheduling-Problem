@@ -19,8 +19,9 @@ public class GeneticsVariablesCapsule {
         private int MethodMode;
         private boolean bypassfittest;
         private boolean tournament;
+        private boolean Preserve_length;
         
-    public GeneticsVariablesCapsule(float CrossOverFactor,float MutationFactor,float Populationsize,float NumberofGenerations,boolean FeasilbiltyON,int CrossoverMode,int FirstGenChoosingMode,boolean bypassfittest,boolean tournamentstyle){
+    public GeneticsVariablesCapsule(float CrossOverFactor,float MutationFactor,float Populationsize,float NumberofGenerations,boolean FeasilbiltyON,int CrossoverMode,int FirstGenChoosingMode,boolean bypassfittest,boolean tournamentstyle, boolean PL){
         
         this.CrossOverFactor=CrossOverFactor;
         this.MutationFactor=MutationFactor;
@@ -31,10 +32,11 @@ public class GeneticsVariablesCapsule {
         this.FirstGenChoosingMode=FirstGenChoosingMode;
         this.bypassfittest=bypassfittest;
         this.tournament=tournamentstyle;
+        this.Preserve_length=PL;
     }
     @Override
     public String toString(){
-        return "COF="+this.CrossOverFactor+" MUT "+MutationFactor+" Populationsize  "+Populationsize+ " #of Generations "+NumberofGenerations+ " Feasibility " + FeasilbiltyON +" CrossoverMode "+CrossoverMode+"BypassFittest "+bypassfittest+" tournamentstyle "+tournament;
+        return "COF="+this.CrossOverFactor+" MUT "+MutationFactor+" Populationsize  "+Populationsize+ " #of Generations "+NumberofGenerations+ " Feasibility " + FeasilbiltyON +" CrossoverMode "+CrossoverMode+"BypassFittest "+bypassfittest+" tournamentstyle "+tournament + " Preserve Length " + Preserve_length;
 
 }
     /**
@@ -175,5 +177,19 @@ public class GeneticsVariablesCapsule {
      */
     public void setTournament(boolean tournament) {
         this.tournament = tournament;
+    }
+
+    /**
+     * @return the Preserve_length
+     */
+    public boolean isPreserve_length() {
+        return Preserve_length;
+    }
+
+    /**
+     * @param Preserve_length the Preserve_length to set
+     */
+    public void setPreserve_length(boolean Preserve_length) {
+        this.Preserve_length = Preserve_length;
     }
 }

@@ -765,6 +765,7 @@
                           <Component id="ApplyGenetics_B" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="Tournamentselection_CB" min="-2" max="-2" attributes="0"/>
+                      <Component id="PreserveLength_CB" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -792,8 +793,7 @@
                               <Component id="Genetics_CB" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="ApplyGenetics_B" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="TWOPOINT_CHB" pref="24" max="32767" attributes="0"/>
+                          <Component id="TWOPOINT_CHB" pref="30" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -814,7 +814,9 @@
                           <Component id="ByPassFittest" min="-2" pref="18" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="Tournamentselection_CB" min="-2" pref="18" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="PreserveLength_CB" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -918,6 +920,13 @@
         <Component class="javax.swing.JCheckBox" name="Tournamentselection_CB">
           <Properties>
             <Property name="text" type="java.lang.String" value="Tournament selection"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="PreserveLength_CB">
+          <Properties>
+            <Property name="selected" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="Preserve lengths"/>
+            <Property name="name" type="java.lang.String" value="Preserve_Length_CB" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

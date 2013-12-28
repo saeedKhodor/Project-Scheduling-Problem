@@ -130,7 +130,7 @@ public class Generation {
         String S = "";//ID,Chromosome ,Duration,Fitness,ProjectRunningStats,Mutated" + '\n';
         for (Chromosome CHR : Chromosomes) {
 
-            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "," + CHR.getCHES().getDelayDtring(this.ProjectSortingForCSV) + "\n";
+            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "," + CHR.getCHES().getDelayString(this.ProjectSortingForCSV) + "\n";
 
         }
 
@@ -155,7 +155,7 @@ public class Generation {
 
         Chromosome CHR = getHighestDurationChr();
         if (CHR != null) {
-            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "," + CHR.getCHES().getDelayDtring(this.ProjectSortingForCSV) + "\n";
+            S += this.GP.getGPID() + "," + this.getGenerationID() + "," + CHR.toString() + "," + CHR.getDuration() + "," + CHR.getFitness() + "," + CHR.isHasbeenMutated() + "," + CHR.getCHES().toString() + "," + CHR.getCHES().getDelayString(this.ProjectSortingForCSV) + "\n";
 
         } else {
             S += this.GP.getGPID() + "," + this.getGenerationID() + "There is no fit chromosome to display ";
@@ -214,10 +214,20 @@ public float getHighestFittnessChrfloat() {
 //        float mutationfactor = this.GVC.getMutationFactor();
 //        float CrossOverFactor = this.GVC.getCrossOverFactor();
 
+        
 
         Generation nextGen = new Generation(this.getGMParent(), this.poulationsize, this.GVC, this.Log);
         nextGen.setGenerationID(this.GenerationID + 1);
         nextGen.setGP(this.GP);
+        // Prepare for Preserve Length method
+        Preserve_Length_Coardinator PLC=null;
+        if(GVC.isPreserve_length()){
+            PLC=new Preserve_Length_Coardinator(this.Chromosomes);
+
+        }
+        
+        
+        // end of prepare for preserve Length
         // Milestone assign probabilities two methods... first check if all the Fitnesses are equal...assign equal percentage 
         float Fitness;
         boolean foundthatallFitnessareequal = true;
@@ -238,6 +248,7 @@ public float getHighestFittnessChrfloat() {
                 break;
             }
         }
+        
         if (foundthatallFitnessareequal) {
             float GenProbability = (float) 1 / this.poulationsize;
             int count = 0;
@@ -309,11 +320,23 @@ public float getHighestFittnessChrfloat() {
 
 
                 }
-                if (!GVC.isTournament()) {
+                if (GVC.isTournament()) {
+                            CHr2 = getCHRbyTOurnament();
+                            CHr1 = getCHRbyTOurnament();
+                            ChrFound += 2;
+// here is the tournament style
 
-
-                    //float RandomNumber = GeneticsMain.GeneticsGenerateNumberPercentage();
-                    float RandomNumber = GeneticsMain.GeneticsGenerateNumberbetweenvalues(0.0f, (getHighestFittnessChrfloat()+0.1f));
+                            break;
+                   
+                   
+                } else if (GVC.isPreserve_length()){
+                            CHr2 = PLC.chooseCHR();
+                    
+                            CHr1 = PLC.chooseCHR();
+                            ChrFound += 2;
+                    
+                    }else {
+                     float RandomNumber = GeneticsMain.GeneticsGenerateNumberbetweenvalues(0.0f, (getHighestFittnessChrfloat()+0.1f));
 
                     for (int i = 0; i < Chromosomes.size(); i++) {
                         if (ChrFound == 1 && Chr1index == i) {
@@ -352,14 +375,7 @@ public float getHighestFittnessChrfloat() {
                         }
 
                     }
-                } else {
-// here is the tournament style
-                            CHr2 = getCHRbyTOurnament();
-                            CHr1 = getCHRbyTOurnament();
-                            ChrFound += 2;
-                            break;
 
-                    // }
                 }
                 ubnormal1++;
             }
@@ -387,7 +403,11 @@ public float getHighestFittnessChrfloat() {
 
         return nextGen;
     }
-
+public Chromosome getCHRbyPreserve_Length(){
+    
+    
+    return null;
+}
     public Chromosome getCHRbyTOurnament() {
         ArrayList<Integer> Randomnumbers = new ArrayList<Integer>(3);
 

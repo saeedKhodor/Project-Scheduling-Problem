@@ -119,7 +119,7 @@ public class ChromosomeExcutionStats {
         
         
     }
- public String getDelayDtring(String Projectnames) {
+ public String getDelayString(String Projectnames) {
            if(ProejctsStats.isEmpty()){
             return "NA";
         }
