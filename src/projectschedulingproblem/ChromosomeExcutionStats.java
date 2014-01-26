@@ -119,22 +119,47 @@ public class ChromosomeExcutionStats {
         
         
     }
+    public float getmaxFromArray(float []a){
+        float max=-100;
+        
+        for(int i=0;i<a.length;i++){
+            
+            if(a[i]>max){
+                max=a[i];
+            }
+            
+        }
+        if(max==-100){
+           return 0.0f; 
+        }
+        return max;
+    }
  public String getDelayString(String Projectnames) {
            if(ProejctsStats.isEmpty()){
             return "NA";
         }
         String S="";
      String[]explode=Projectnames.split(",");
+     float[] delays=new float[explode.length];
+     float[] durs=new float[explode.length];
+     float ResulRatio=0.0f;
       for (int i = 0; i < explode.length; i++) {
 
          for (ProjectExcutionStats PES : this.ProejctsStats) {
              if(PES.ParentOP.getProjectName().equals(explode[i])){
                  S += PES.getDelay() + ",";
+                 ResulRatio+=PES.getR3Ratio();
+                 delays[i]=PES.getDuration();
+                 durs[i]=PES.getR5Sum();
+                                 
              }
-             
-
          }
      }
+      S+=(ResulRatio/explode.length)+",";
+      float maxdur=getmaxFromArray(durs);
+      float maxdelays=getmaxFromArray(delays);
+      float r5=(maxdur-maxdelays)/maxdelays;
+      S+=r5;
         return S;
     }
     @Override

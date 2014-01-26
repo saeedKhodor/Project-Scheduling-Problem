@@ -160,11 +160,12 @@ public class WritetoCSV {
 
             } else {
                 if (!ProjectNames.equals("Nothing")) {// to be able add the colomns of project names as the headers for the Delay time 
-                    writer.write("," + ProjectNames + '\n');
+                    writer.write("," + ProjectNames );
+                    writer.write("R3,R5"+ '\n');
                 } else {
                     writer.append(gen.GenerateCSVStringForFinalResultCSV());
                 }
-
+                
 
             }
 
